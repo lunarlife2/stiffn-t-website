@@ -125,7 +125,13 @@
 .warning:active, .warning.chosen { --fill: var(--orange-300); --text: var(--orange-100); }
 .warning:disabled, .warning[aria-disabled="true"] { --fill: var(--orange-100); --text: var(--orange-200); }
 
+/* light primary (website-only): a cream capsule with dark green text, for the green hero */
+.primary.light { --fill: var(--app-background); --text: var(--green-primary-500); }
+.primary.light:active, .primary.light.chosen { --fill: var(--green-primary-200); --text: var(--green-primary-600); }
+.primary.light:disabled, .primary.light[aria-disabled="true"] { --fill: var(--green-primary-100); --text: var(--green-primary-400); }
+
 @media (hover: hover) {
+  .primary.light:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --fill: var(--green-primary-200); --text: var(--green-primary-500); }
   .primary:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --fill: var(--green-primary-300); --text: var(--green-primary-500); }
   .secondary:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --outline: var(--green-primary-300); --text: var(--green-primary-500); }
   .tertiary:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --text: var(--green-primary-300); }
@@ -174,5 +180,16 @@
 }
 
 .small .stack {
-  padding: 4px 0;
+  gap: 4px;
+  padding: 8px 0;
+}
+
+.small:has(.stack) {
+  padding: 0 calc(var(--button-padding-x-small) * 1.4);
+}
+
+/* the big Download buttons get more room between the two lines and above and below them */
+.large .stack {
+  gap: 6px;
+  padding: 12px 0;
 }

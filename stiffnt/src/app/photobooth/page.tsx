@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   // DRAFT COPY
   title: "Photobooth",
   // DRAFT COPY
-  description: "Take a photo with Steven the cat. Add his crown, glasses, bow or fairy wings, then download it as a PNG.",
+  description: "Take a photo with Steven the cat. Then add his crown, glasses, bow or fairy wings, and download it as a PNG.",
 };
 
 /**
@@ -31,12 +31,12 @@ export default function PhotoboothPage() {
             </summary>
             <div className={styles.infoPanel}>
               <p>
-                Strike a pose with Steven! Pick a frame, add stickers and place them where you like, then take a single
-                photo or a strip of three. Stickers lock once you start shooting.
+                Strike a pose with Steven! First take a single photo or a strip of three. Then pick a frame and a
+                colour, drag stickers onto the photo you want them on, and save it.
               </p>
               <p>
-                Your photos stay on your device, unless you tap “Get it on my phone”. Then the photo is uploaded so your
-                phone can open it. Only people with the link can see it, and it’s deleted automatically after{" "}
+                Your photo is made in your browser. When it&apos;s finished, it is uploaded so a QR code can open it on
+                your phone. Only people with the link can see it, and it&apos;s deleted automatically after{" "}
                 {site.photobooth.photoLifetimeHours} hours.
               </p>
             </div>

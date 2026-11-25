@@ -1,0 +1,7 @@
+.logotype {
+  display: block;
+  aspect-ratio: 2022 / 507;
+  background-color: currentColor;
+  mask: url("/images/ui/logotype.svg") center / contain no-repeat;
+  -webkit-mask: url("/images/ui/logotype.svg") center / contain no-repeat;
+}

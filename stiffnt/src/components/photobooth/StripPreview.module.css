@@ -1,0 +1,230 @@
+/* The strip preview: the whole paper (1200 × 2830) in percentages, so it scales to any size. Laid out by Photobooth. */
+.strip {
+  /* as tall as the camera preview beside it; the paper's own shape sets the width */
+  height: var(--strip-h, calc(var(--pw, 640px) * 0.75));
+  aspect-ratio: 1200 / 2830;
+  flex: none;
+}
+
+.paper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  container-type: inline-size;
+  border: 2px solid var(--black);
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 0 var(--black);
+}
+
+.slot {
+  position: absolute;
+  overflow: hidden;
+  border-radius: calc(24 / 1200 * 100cqw);
+  background: var(--shadow-400);
+}
+
+/* the 6 px black outline of the paper */
+.slot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 calc(6 / 1200 * 100cqw) var(--black);
+  pointer-events: none;
+}
+
+/* the photo being taken right now */
+.current::after {
+  box-shadow: inset 0 0 0 calc(16 / 1200 * 100cqw) var(--green-primary-500);
+}
+
+/* a sticker being dragged over this photo */
+.slot[data-over]::after {
+  box-shadow: inset 0 0 0 calc(16 / 1200 * 100cqw) var(--green-primary-500);
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sticker {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
+.sticker img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+/* step 2: grab a sticker on any of the three photos */
+.stickerButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+  pointer-events: auto;
+}
+
+.stickerButton:active {
+  cursor: grabbing;
+}
+
+/* the chosen sticker's ✕ and resize handle: small round buttons on its corners */
+.handle {
+  position: absolute;
+  z-index: 8;
+  translate: -50% -50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1.5px solid var(--black);
+  border-radius: 999px;
+  touch-action: none;
+}
+
+/* a bigger area to grab than the dot looks */
+.handle::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+}
+
+.removeHandle {
+  background: var(--red-300);
+  color: var(--black);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.resizeHandle {
+  background: var(--green-primary-500);
+  color: var(--white);
+  cursor: nwse-resize;
+}
+
+.resizeHandle svg {
+  transform: rotate(90deg);
+  pointer-events: none;
+}
+
+.stickerSelected {
+  outline: 2px dashed var(--white);
+  outline-offset: 2px;
+}
+
+.stickerButton:focus-visible {
+  outline: 3px solid var(--green-primary-500);
+  outline-offset: 2px;
+}
+
+.empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--family-display);
+  font-size: 18cqw;
+  color: rgb(255 255 255 / 0.55);
+}
+
+.label {
+  position: absolute;
+  border: calc(4 / 1200 * 100cqw) solid var(--black);
+  border-radius: calc(24 / 1200 * 100cqw);
+  background: #f7f2de;
+}
+
+.name,
+.date {
+  position: absolute;
+  color: var(--black);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.name {
+  font-family: var(--family-display);
+  font-size: calc(110 / 1200 * 100cqw);
+}
+
+.date {
+  font-family: var(--family-text);
+  font-weight: 600;
+  font-size: calc(40 / 1200 * 100cqw);
+}
+
+.steven {
+  position: absolute;
+  z-index: 6;
+  height: auto;
+  max-width: none;
+  pointer-events: none;
+}
+
+/* phones: three small framed photos in a row instead of the tall paper */
+.row {
+  display: none;
+}
+
+@media (max-width: 899px) {
+  .strip {
+    display: none;
+  }
+
+  .row {
+    order: 2;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+  }
+
+  .rowItem {
+    position: relative;
+    border-radius: 8px;
+  }
+
+  /* tap a photo to decorate it */
+  .rowPick {
+    position: absolute;
+    inset: 0;
+    z-index: 7;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .rowCurrent {
+    outline: 3px solid var(--green-primary-500);
+    outline-offset: 1px;
+  }
+
+  .row .photo {
+    position: absolute;
+  }
+
+  .row .empty {
+    font-size: 28px;
+  }
+}

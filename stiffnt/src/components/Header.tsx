@@ -3,6 +3,7 @@ import Link from "next/link";
 import { DownloadButton } from "./Button";
 import { MainNav, MobileMenu } from "./MobileMenu";
 import { FocusRing } from "./BrushStroke";
+import { Logotype } from "./Logotype";
 import styles from "./Header.module.css";
 
 /**
@@ -17,7 +18,7 @@ export function Header() {
         <Link href="/" className={styles.brand} aria-label="Stiffn't home">
           <FocusRing cornerRadius={12} />
           <Image src="/images/ui/app-icon.png" alt="" width={40} height={40} className={styles.icon} priority />
-          <span className={styles.name}>Stiffn&apos;t</span>
+          <Logotype className={styles.name} />
         </Link>
 
         <MainNav className={styles.desktopNav} />

@@ -7,7 +7,7 @@
 /* ══ Desktop / landscape tablet (≥ 900 px) ══ */
 .setup {
   display: grid;
-  grid-template-columns: var(--pw, 640px) minmax(320px, 1fr);
+  grid-template-columns: max-content minmax(320px, 1fr); /* the camera (and the strip preview beside it), then the options */
   grid-template-rows: auto auto;
   column-gap: 24px;
   row-gap: 12px;
@@ -29,7 +29,99 @@
 }
 
 .titleRow > :last-child {
+  grid-column: 3;
   justify-self: end;
+}
+
+/* the empty spacer that holds the middle slot after the photo is taken */
+.titleRow > span:empty {
+  display: none;
+}
+
+/* ── The three steps: Take photo → Decorate → Save ── */
+.steps {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 14px 3px 4px;
+  border: 1.5px solid var(--black);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--shadow-400);
+  font-size: var(--type-subhead);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stepNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--app-background);
+  color: var(--shadow-500);
+  font-size: var(--type-caption);
+}
+
+.stepCurrent {
+  background: var(--green-primary-500);
+  color: var(--app-background);
+}
+
+.stepCurrent .stepNumber {
+  background: var(--app-background);
+  color: var(--green-primary-500);
+}
+
+.stepDone {
+  background: var(--green-primary-300);
+  color: var(--black);
+}
+
+.stepDone .stepNumber {
+  background: var(--green-primary-500);
+  color: var(--app-background);
+}
+
+/* decorating a strip on a computer: the three-photo strip on its own, with the options beside it (phones keep the big photo) */
+@media (min-width: 900px) {
+  .setupStrip {
+    grid-template-columns: max-content minmax(320px, 420px);
+    justify-content: center;
+  }
+
+  .previewBoxHidden {
+    display: none;
+  }
+}
+
+/* step 1: just the camera, centred (the options only come after the photo is taken) */
+.setupShoot {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+}
+
+.setupShoot .titleRow,
+.setupShoot .steps {
+  justify-self: stretch;
+}
+
+.setupShoot .left {
+  align-items: center;
+  width: 100%;
 }
 
 .left {
@@ -39,10 +131,46 @@
   min-width: 0;
 }
 
+/* the camera / photo, and (strip) the three-photo preview beside it */
+.stage {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
 .previewBox {
   position: relative;
+  flex: none;
   width: var(--pw, 640px);
   max-width: 100%;
+}
+
+/* step 2: the options with Retake and Done under them, in the right-hand column */
+@media (min-width: 900px) {
+  .right {
+    align-self: stretch;
+    contain: size; /* never makes the row taller than the preview */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  .right .panel {
+    flex: 1 1 0;
+    contain: none;
+    min-height: 0;
+  }
+}
+
+.right .actionRow {
+  display: flex;
+  gap: 12px;
+}
+
+.right .takeButton {
+  flex: 1;
+  min-width: 0;
 }
 
 /* the strip indicator left of the button, the button centred */
@@ -172,6 +300,13 @@
   gap: 10px;
 }
 
+.dragHint {
+  margin: 0;
+  font-size: var(--type-subhead);
+  font-weight: 600;
+  color: var(--shadow-400);
+}
+
 .stickerTools {
   display: flex;
   flex-wrap: wrap;
@@ -205,13 +340,19 @@
   }
 
   /* the mode switch under the title, centred */
-  .titleRow > :nth-child(2) {
+  .titleRow > :last-child {
+    grid-column: auto;
+  }
+
+  .titleRow > :nth-child(2):not(span) {
     grid-column: 1 / -1;
     grid-row: 2;
     justify-self: center;
   }
 
-  .left {
+  .left,
+  .right,
+  .stage {
     display: contents;
   }
 
@@ -291,6 +432,16 @@
 .slotInner {
   position: absolute;
   inset: 0;
+}
+
+/* the taken photo (already mirrored when it was taken) */
+.shotImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
 }
 
 /* mirrored, like a mirror (the photo is mirrored the same way) */
@@ -554,14 +705,15 @@
 .handoffInner {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 22px 22px 24px;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 14px 16px 16px;
   outline: none;
 }
 
 .handoffTitle {
   font-family: var(--family-display);
-  font-size: var(--type-large-title);
+  font-size: var(--type-title2);
   font-weight: 400;
   line-height: 1.15;
 }
@@ -582,8 +734,9 @@
 
 /* dark ink on light paper, with a quiet zone and a thin outline */
 .qr {
-  width: 200px;
-  height: 200px;
+  width: min(100%, 200px);
+  aspect-ratio: 1;
+  height: auto;
   border: 1.5px solid var(--black);
   border-radius: 12px;
   background: var(--white);
@@ -616,71 +769,98 @@
 
 
 
-/* ══ Result ══ */
+/* ══ Result (step 3): the finished picture in the middle, the buttons and QR code beside it, all in the window ══ */
 .resultPage {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  height: calc(100dvh - var(--header-h, 72px) - 24px);
 }
 
 .resultPage .titleRow {
   grid-template-columns: 1fr auto;
 }
 
-.result {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
-  padding-bottom: 24px;
+.resultPage .titleRow > :last-child {
+  grid-column: auto;
 }
 
-@media (min-width: 900px) {
-  /* buttons beside the picture, staying in view while a tall strip scrolls */
-  .result {
-    grid-template-columns: minmax(0, 1fr) 420px;
-  }
-  .resultSide {
-    order: 2;
-    position: sticky;
-    top: calc(var(--header-h, 72px) + 16px);
-  }
-  .resultBox {
-    order: 1;
-    justify-self: end;
-  }
+/* three columns: empty | the picture | buttons and QR, so the picture is in the middle of the page */
+.result {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(300px, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  column-gap: 28px;
+  align-items: center;
 }
 
 .resultBox {
-  width: min(100%, 420px);
-  justify-self: center;
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  padding: 0 8px 8px 0; /* room for the picture's shadow */
 }
 
+/* as big as fits in the window, whole, never cropped */
 .resultImage {
   display: block;
-  width: 100%;
+  width: auto;
   height: auto;
+  max-width: 100%;
+  max-height: 100%;
   border: 1.5px solid var(--black);
   box-shadow: 5px 5px 0 0 var(--black);
 }
 
 .resultSide {
+  grid-column: 3;
+  grid-row: 1;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-width: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 2px 8px 8px 2px;
 }
 
 .resultBar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 16px;
+  gap: 10px 14px;
 }
 
-/* phones: the buttons in a bar fixed to the bottom of the screen */
+.resultSide .handoff {
+  width: 100%;
+  max-width: 360px;
+}
+
+/* phones: the picture fills the space above the buttons, which sit in a bar fixed to the bottom of the screen */
 @media (max-width: 899px) {
+  .resultPage {
+    height: calc(100dvh - var(--header-h, 64px) - 6px);
+  }
   .result {
-    padding-bottom: calc(110px + env(safe-area-inset-bottom));
+    grid-template-columns: minmax(0, 1fr);
+    padding-bottom: calc(128px + env(safe-area-inset-bottom));
+  }
+  .resultBox {
+    grid-column: 1;
+  }
+  .resultSide {
+    display: contents;
+  }
+  /* phones get Save / Share in the bar instead; a narrow desktop window has no room for the QR code */
+  .resultSide .handoff {
+    display: none;
   }
   .resultBar {
     position: fixed;
@@ -693,4 +873,15 @@
     border-top: 1.5px solid var(--black);
     background: var(--app-background);
   }
+}
+
+/* the same square while the QR code is being made, so nothing jumps */
+.qrWaiting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--shadow-400);
 }

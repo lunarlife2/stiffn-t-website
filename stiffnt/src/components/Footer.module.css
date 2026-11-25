@@ -37,9 +37,7 @@
 }
 
 .name {
-  font-family: var(--family-display);
-  font-size: var(--type-large-title);
-  line-height: 1;
+  width: 112px;
 }
 
 .tagline {
