@@ -1,0 +1,122 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 64px;
+}
+
+.text {
+  max-width: 52ch;
+  margin: 0;
+  font-size: var(--type-title2);
+  line-height: 1.5;
+}
+
+.free {
+  margin: 0;
+  font-size: var(--type-body);
+  font-weight: 600;
+  color: var(--green-primary-600);
+}
+
+/* ── popup ── */
+.popup {
+  width: min(100%, 680px);
+  margin: 0 auto;
+}
+
+.popupArt {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(20px, 6%, 40px);
+  border-bottom: 2px solid var(--black);
+}
+
+/* the video sits on the burst like the picture in BoughtPopup, with the Shop picture's corner 18 */
+.popupVideo {
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--black);
+  border-radius: var(--shop-card-picture-radius);
+}
+
+.popupWords {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px 22px 26px;
+}
+
+/* appLargeTitle, black; subtitle system 15 in shadow400 (BoughtPopup) */
+.popupTitle {
+  font-family: var(--family-display);
+  font-size: var(--type-large-title);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.popupText {
+  margin: 0;
+  font-size: var(--type-popup-body);
+  font-weight: 400;
+  color: var(--shadow-400);
+}
+
+/* ── stage ── */
+.stageWords {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.stageVideo {
+  width: min(100%, 1000px);
+  margin: 0 auto;
+}
+
+/* ── band ── */
+.band {
+  position: relative;
+  overflow: hidden;
+  /* full width of the window, out of the page's column */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-top: 64px;
+  padding: 56px 20px;
+  border-top: 2px solid var(--black);
+  border-bottom: 2px solid var(--black);
+}
+
+.bandInner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+  width: 100%;
+  max-width: calc(var(--page-max-width) - 40px);
+  margin: 0 auto;
+}
+
+/* Phones and tablets (stacked): the words first, so people know what they're looking at, then the video. */
+@media (max-width: 899px) {
+  .bandWords {
+    order: -1;
+  }
+}
+
+@media (min-width: 900px) {
+  .bandInner {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 32px;
+  }
+}
+
+.bandWords {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 22px 26px;
+}

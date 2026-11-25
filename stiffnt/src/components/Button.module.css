@@ -1,0 +1,171 @@
+/*
+ * StiffntButtonStyle (UIFeature/Component/Button.swift).
+ * Each kind sets --fill / --outline / --text per phase: normal, hover, pressed (:active or chosen), disabled.
+ * Hover only on devices that really hover, so taps on phones don't leave a stuck hover look.
+ */
+
+.button {
+  --fill: transparent;
+  --outline: transparent;
+  --text: var(--green-primary-500);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  min-height: var(--button-height);
+  padding: 0 var(--button-padding-x);
+  border: 0;
+  border-radius: 999px;
+  background: var(--fill);
+  color: var(--text);
+  font-family: var(--family-display);
+  font-size: var(--button-font-size);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--motion-button), background-color var(--motion-button);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:focus-visible {
+  outline: none;
+}
+
+.small {
+  min-height: var(--button-height-small);
+  padding: 0 var(--button-padding-x-small);
+  font-size: var(--button-font-size-small);
+}
+
+.wide {
+  width: 100%;
+}
+
+.label {
+  position: relative; /* above the strokes */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.thinOutline {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--outline);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.underline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--text);
+}
+
+.small .underline {
+  bottom: -4px;
+  height: 2px;
+}
+
+.button:disabled,
+.button[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/* primary */
+.primary { --fill: var(--green-primary-500); --text: var(--green-primary-300); }
+.primary:active, .primary.chosen { --fill: var(--green-primary-600); --text: var(--green-primary-400); }
+.primary:disabled, .primary[aria-disabled="true"] { --fill: var(--green-primary-400); --text: var(--green-primary-300); }
+
+/* secondary: outline only */
+.secondary { --outline: var(--green-primary-500); --text: var(--green-primary-500); }
+.secondary:active, .secondary.chosen { --outline: var(--green-primary-600); --text: var(--green-primary-600); }
+.secondary:disabled, .secondary[aria-disabled="true"] { --outline: var(--green-primary-300); --text: var(--green-primary-300); }
+
+/* tertiary: text only */
+.tertiary { --text: var(--green-primary-500); }
+.tertiary:active, .tertiary.chosen { --text: var(--green-primary-600); }
+.tertiary:disabled, .tertiary[aria-disabled="true"] { --text: var(--green-primary-400); }
+
+/* underlined: text with a hand-drawn line under it */
+.underlined { --text: var(--green-primary-500); padding: 0 4px; }
+.underlined:active, .underlined.chosen { --text: var(--green-primary-600); }
+.underlined:disabled, .underlined[aria-disabled="true"] { --text: var(--green-primary-400); }
+
+/* neutral: grey */
+.neutral { --fill: var(--shadow-100); --text: var(--shadow-400); }
+.neutral:active, .neutral.chosen { --fill: var(--shadow-300); --text: var(--shadow-100); }
+.neutral:disabled, .neutral[aria-disabled="true"] { --fill: var(--shadow-100); --text: var(--shadow-200); }
+
+/* destructive */
+.destructive { --fill: var(--red-300); --text: var(--red-400); }
+.destructive:active, .destructive.chosen { --fill: var(--red-400); --text: var(--red-200); }
+.destructive:disabled, .destructive[aria-disabled="true"] { --fill: var(--red-100); --text: var(--red-200); }
+
+/* positive */
+.positive { --fill: var(--green-secondary-300); --text: var(--green-secondary-400); }
+.positive:active, .positive.chosen { --fill: var(--green-secondary-400); --text: var(--green-secondary-300); }
+.positive:disabled, .positive[aria-disabled="true"] { --fill: var(--green-secondary-100); --text: var(--green-secondary-200); }
+
+/* warning */
+.warning { --fill: var(--orange-300); --text: var(--orange-500); }
+.warning:active, .warning.chosen { --fill: var(--orange-300); --text: var(--orange-100); }
+.warning:disabled, .warning[aria-disabled="true"] { --fill: var(--orange-100); --text: var(--orange-200); }
+
+@media (hover: hover) {
+  .primary:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --fill: var(--green-primary-300); --text: var(--green-primary-500); }
+  .secondary:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --outline: var(--green-primary-300); --text: var(--green-primary-500); }
+  .tertiary:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --text: var(--green-primary-300); }
+  .underlined:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --text: var(--green-primary-300); }
+  .neutral:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --fill: var(--shadow-200); --text: var(--shadow-400); }
+  .destructive:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --fill: var(--red-200); --text: var(--red-300); }
+  .positive:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --fill: var(--green-secondary-200); --text: var(--green-secondary-300); }
+  .warning:hover:not(:active):not(:disabled):not([aria-disabled="true"]):not(.chosen) { --fill: var(--orange-200); --text: var(--orange-400); }
+}
+
+/* secondary: brush outline normally; a thin 1px capsule when disabled (Button.swift: thinOutline) */
+.secondary :global(.secondary-thin) { display: none; }
+.secondary:disabled :global(.secondary-thin),
+.secondary[aria-disabled="true"] :global(.secondary-thin) { display: block; }
+.secondary:disabled :global(.secondary-stroke),
+.secondary[aria-disabled="true"] :global(.secondary-stroke) { display: none; }
+
+/* sidebar: the main window's tabs (MainView.swift). Dark green text; light green pill on hover;
+   the open tab a dark green pill with light text. SF Rounded 13, semibold when open. */
+.sidebar {
+  --text: var(--sidebar-ink);
+  font-family: var(--family-text);
+  font-size: var(--type-body);
+  font-weight: 500;
+  padding: 0 calc(13px * var(--type-scale));
+}
+.sidebar:active, .sidebar.chosen { --fill: var(--sidebar-ink); --text: var(--green-primary-200); font-weight: 600; }
+@media (hover: hover) {
+  .sidebar:hover:not(:active):not(.chosen) { --fill: var(--green-primary-300); --text: var(--sidebar-ink); }
+}
+
+/* Download button: the label with a small line under it */
+.stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 0;
+}
+
+.subline {
+  font-family: var(--family-text);
+  font-size: var(--type-caption);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.small .stack {
+  padding: 4px 0;
+}

@@ -1,0 +1,63 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 64px;
+}
+
+.panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 820px) {
+  .panel {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  }
+}
+
+/* the picture on yellow500 (the app's card picture background), cut off from the words by a 2pt black line */
+.art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: var(--yellow-500);
+  border-bottom: 2px solid var(--black);
+}
+
+@media (min-width: 820px) {
+  .art {
+    border-bottom: 0;
+    border-right: 2px solid var(--black);
+  }
+}
+
+.art img {
+  width: min(100%, 260px);
+  height: auto;
+}
+
+.story {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 26px 24px 28px;
+  font-size: var(--type-title2);
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.story p {
+  margin: 0;
+  max-width: 60ch;
+}
+
+/* the last line: Darumadrop, mainGreen */
+.closing {
+  margin-top: 4px;
+  font-family: var(--family-display);
+  font-size: var(--type-title1);
+  line-height: 1.3;
+  color: var(--main-green);
+}

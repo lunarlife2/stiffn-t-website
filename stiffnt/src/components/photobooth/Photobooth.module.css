@@ -1,0 +1,443 @@
+.booth {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .booth {
+    grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+  }
+}
+
+/* ── Frames around the live picture (same as the PNG: lib/photobooth.ts) ── */
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+}
+
+.frame-none {
+  padding: 0;
+}
+
+.frame-outline {
+  padding: 4%;
+  background: var(--app-background);
+  border: 1.5px solid var(--black);
+}
+
+.frame-sunburst {
+  padding: 8%;
+  border: 2px solid var(--black);
+}
+
+.photo {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--shadow-400);
+  touch-action: none;
+  user-select: none;
+}
+
+.frame-outline .photo,
+.frame-sunburst .photo {
+  border: 2px solid var(--black);
+  border-radius: 24px;
+  box-shadow: 5px 5px 0 0 var(--black);
+  overflow: hidden;
+}
+
+.video,
+.uploaded {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* mirrored, like a mirror */
+.video {
+  scale: -1 1;
+}
+
+.notice {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  background: var(--app-background);
+  text-align: center;
+  overflow: auto;
+}
+
+.notice p {
+  max-width: 40ch;
+  margin: 0;
+}
+
+.noticeTitle {
+  font-family: var(--family-display);
+  font-size: var(--type-large-title);
+}
+
+/* ── Stickers ── */
+.sticker {
+  position: absolute;
+  translate: -50% -50%;
+}
+
+.stickerBody {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+}
+
+.stickerBody:active {
+  cursor: grabbing;
+}
+
+.stickerBody img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.stickerSelected .stickerBody {
+  outline: 2px dashed var(--white);
+  outline-offset: 2px;
+}
+
+/* CloseDot-like remove button and a resize handle, 32px for fingers */
+.removeDot,
+.resizeDot {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--black);
+  border-radius: 999px;
+  touch-action: none;
+}
+
+.removeDot {
+  top: -16px;
+  right: -16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--red-300);
+  color: var(--black);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.resizeDot {
+  right: -16px;
+  bottom: -16px;
+  background: var(--green-primary-300);
+  cursor: nwse-resize;
+}
+
+/* ── Countdown ── */
+.countdown {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.countStill,
+.countPop {
+  font-family: var(--family-display);
+  font-size: clamp(96px, 20vw, 200px);
+  line-height: 1;
+  color: var(--white);
+  text-shadow: 5px 5px 0 var(--black);
+}
+
+.countPop {
+  animation: count-pop 1s ease-out both;
+}
+
+/* Reduced motion: the numbers just change, no animation. */
+@media (prefers-reduced-motion: reduce) {
+  .countPop {
+    animation: none;
+  }
+}
+
+@keyframes count-pop {
+  0% { scale: 1.6; opacity: 0; }
+  20% { scale: 1; opacity: 1; }
+  80% { scale: 1; opacity: 1; }
+  100% { scale: 0.9; opacity: 0; }
+}
+
+.countText {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* ── Controls ── */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.groupTitle {
+  font-size: var(--type-title2);
+  font-weight: 600;
+}
+
+.tray {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trayItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 8px;
+  border: 1.5px solid var(--black);
+  border-radius: 13px;
+  background: var(--yellow-500);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .trayItem:hover {
+    background: var(--green-primary-300);
+  }
+}
+
+.trayItem img {
+  width: 100%;
+  height: auto;
+}
+
+/* ── Result ── */
+.result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 900px) {
+  .result {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+}
+
+.resultImage {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  border-radius: 12px;
+}
+
+/* the 600 × 1800 strip, shown at most 70% of the window tall */
+.resultStrip {
+  width: auto;
+  height: min(70vh, 900px);
+  max-width: 100%;
+  justify-self: center;
+  border: 1.5px solid var(--black);
+  box-shadow: 5px 5px 0 0 var(--black);
+}
+
+.resultSide {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Get it on my phone (Panel: corner 24, outline 2, shade 5) ── */
+.handoff {
+  max-width: 560px;
+}
+
+.handoffInner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 22px 24px;
+  outline: none;
+}
+
+.handoffTitle {
+  font-family: var(--family-display);
+  font-size: var(--type-large-title);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.handoffText {
+  margin: 0;
+  font-size: var(--type-popup-body);
+  font-weight: 400;
+  color: var(--shadow-400);
+}
+
+.qrRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+/* dark ink on light paper, with a quiet zone (from the QR margin) and a thin outline */
+.qr {
+  width: 200px;
+  height: 200px;
+  border: 1.5px solid var(--black);
+  border-radius: 12px;
+  background: var(--white);
+  image-rendering: pixelated;
+}
+
+.qrWords {
+  display: flex;
+  flex: 1 1 220px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.link {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--white);
+  border: 1px solid var(--shadow-200);
+  font-size: var(--type-subhead);
+  word-break: break-all;
+}
+
+.expires {
+  margin: 0;
+  font-size: var(--type-subhead);
+  font-weight: 600;
+  color: var(--green-primary-600);
+}
+
+/* No camera: the message sets the height, so nothing is cut off on small screens. */
+.photo:has(> .notice) {
+  aspect-ratio: auto;
+  min-height: 300px;
+}
+.photo:has(> .notice) > .notice {
+  position: relative;
+  inset: auto;
+  min-height: 300px;
+}
+
+/* ── Modes ── */
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+
+.stage > .frame {
+  width: 100%;
+}
+
+/* Strip: the paper colour around a 6:5 photo, like one photo of the strip */
+.frameStrip {
+  --strip-cream: var(--app-background);
+  --strip-green: var(--green-primary-300);
+  --strip-yellow: var(--yellow-200);
+  padding: 5%;
+  background: var(--strip-fill, var(--app-background));
+  border: 1.5px solid var(--black);
+}
+
+.photoStrip {
+  aspect-ratio: 6 / 5;
+  border: 2px solid var(--black);
+  border-radius: 18px;
+}
+
+.hint {
+  margin: -4px 0 0;
+  font-size: var(--type-subhead);
+  color: var(--shadow-400);
+}
+
+/* "2 / 3" while a strip is being taken */
+.progress {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  translate: -50% 0;
+  padding: 4px 14px;
+  border: 1.5px solid var(--black);
+  border-radius: 999px;
+  background: var(--app-background);
+  font-family: var(--family-display);
+  font-size: var(--type-title2);
+  pointer-events: none;
+}
+
+/* a short white flash after each photo; none with reduced motion */
+.flash {
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  opacity: 0;
+  pointer-events: none;
+  animation: flash 0.35s ease-out;
+}
+
+@keyframes flash {
+  0% { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flash {
+    display: none;
+  }
+}

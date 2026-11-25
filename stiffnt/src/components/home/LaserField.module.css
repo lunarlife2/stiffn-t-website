@@ -1,0 +1,21 @@
+.field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Like SidebarBackground: the lighter colour at the top left to the deeper one at the bottom right,
+     the looping lines in the lighter colour. The app's sidebar is green (greenPrimary200 → 300). */
+  background: linear-gradient(to bottom right, var(--from), var(--to));
+}
+
+.green { --from: var(--green-primary-200); --to: var(--green-primary-300); }
+.blue { --from: var(--blue-100); --to: var(--blue-200); }
+.yellow { --from: var(--yellow-500); --to: var(--yellow-100); }
+.orange { --from: var(--orange-100); --to: var(--orange-200); }
+
+/* stroke-sidebar, drawn as a template in the lighter colour */
+.lines {
+  position: absolute;
+  inset: 0;
+  background: var(--from);
+  mask: url(/images/ui/stroke-sidebar.png) 0 0 / 181px auto repeat;
+}

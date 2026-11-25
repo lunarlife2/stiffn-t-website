@@ -1,0 +1,125 @@
+.footer {
+  margin-top: auto;
+  border-top: 1.5px solid var(--black); /* MainWindow.outline */
+  background: var(--sidebar-deep);
+  color: var(--sidebar-ink);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 36px 20px 28px;
+}
+
+@media (min-width: 768px) {
+  .columns {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.brand {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+  color: var(--sidebar-ink);
+  text-decoration: none;
+}
+
+.icon {
+  border-radius: 10px;
+  border: 1.5px solid var(--black);
+}
+
+.name {
+  font-family: var(--family-display);
+  font-size: var(--type-large-title);
+  line-height: 1;
+}
+
+.tagline {
+  max-width: 32ch;
+  margin: 12px 0 0;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  border-radius: 6px;
+  color: var(--sidebar-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
+/* "Follow us": SF Rounded 17 semibold (appTitle2) */
+.followTitle {
+  margin-bottom: 10px;
+  font-size: var(--type-title2);
+  font-weight: 600;
+}
+
+.socials {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.social {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--green-primary-300);
+  color: var(--sidebar-ink);
+}
+
+@media (hover: hover) {
+  .social:hover {
+    background: var(--sidebar-ink);
+    color: var(--green-primary-200);
+  }
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 24px;
+  width: calc(100% - 40px);
+  max-width: calc(var(--page-max-width) - 40px);
+  margin: 0 auto;
+  padding: 16px 0 24px;
+  border-top: 1px solid var(--sidebar-ink);
+  font-size: var(--type-subhead);
+}
+
+.bottom p {
+  margin: 0;
+}

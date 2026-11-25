@@ -1,0 +1,56 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  /* SidebarBackground: greenPrimary200 at the top left to greenPrimary300 at the bottom right */
+  background: linear-gradient(to bottom right, var(--green-primary-200), var(--green-primary-300));
+  border-bottom: 1.5px solid var(--black); /* MainWindow.outline */
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 10px 20px;
+}
+
+.brand {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+  color: var(--sidebar-ink);
+  text-decoration: none;
+}
+
+.icon {
+  border-radius: 10px;
+  border: 1.5px solid var(--black);
+}
+
+.name {
+  font-family: var(--family-display);
+  font-size: var(--type-large-title);
+  line-height: 1;
+}
+
+.desktopNav {
+  margin-right: auto;
+}
+
+.desktopDownload {
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .desktopNav,
+  .desktopDownload {
+    display: none;
+  }
+  .inner {
+    justify-content: space-between;
+  }
+}

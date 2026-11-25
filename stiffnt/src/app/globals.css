@@ -1,0 +1,164 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* Tailwind reads the design tokens (src/styles/tokens.css), so utilities like bg-green-primary-500,
+   text-shadow-400 or font-display use the app's values. */
+@theme inline {
+  --color-*: initial;
+  --color-app-background: var(--app-background);
+  --color-green-primary-100: var(--green-primary-100);
+  --color-green-primary-200: var(--green-primary-200);
+  --color-green-primary-300: var(--green-primary-300);
+  --color-green-primary-400: var(--green-primary-400);
+  --color-green-primary-500: var(--green-primary-500);
+  --color-green-primary-600: var(--green-primary-600);
+  --color-main-green: var(--main-green);
+  --color-green3: var(--green3);
+  --color-green-secondary-100: var(--green-secondary-100);
+  --color-green-secondary-200: var(--green-secondary-200);
+  --color-green-secondary-300: var(--green-secondary-300);
+  --color-green-secondary-400: var(--green-secondary-400);
+  --color-yellow-100: var(--yellow-100);
+  --color-yellow-200: var(--yellow-200);
+  --color-yellow-300: var(--yellow-300);
+  --color-yellow-400: var(--yellow-400);
+  --color-yellow-500: var(--yellow-500);
+  --color-orange-100: var(--orange-100);
+  --color-orange-200: var(--orange-200);
+  --color-orange-300: var(--orange-300);
+  --color-orange-400: var(--orange-400);
+  --color-orange-500: var(--orange-500);
+  --color-red-100: var(--red-100);
+  --color-red-200: var(--red-200);
+  --color-red-300: var(--red-300);
+  --color-red-400: var(--red-400);
+  --color-blue-100: var(--blue-100);
+  --color-blue-200: var(--blue-200);
+  --color-blue-300: var(--blue-300);
+  --color-blue-400: var(--blue-400);
+  --color-shadow-100: var(--shadow-100);
+  --color-shadow-200: var(--shadow-200);
+  --color-shadow-300: var(--shadow-300);
+  --color-shadow-400: var(--shadow-400);
+  --color-shadow-500: var(--shadow-500);
+  --color-sidebar-light: var(--sidebar-light);
+  --color-sidebar-deep: var(--sidebar-deep);
+  --color-sidebar-ink: var(--sidebar-ink);
+  --color-white: var(--white);
+  --color-black: var(--black);
+  --color-transparent: transparent;
+
+  --font-display: var(--family-display);
+  --font-text: var(--family-text);
+
+  --text-page-title: var(--type-page-title);
+  --text-large-title: var(--type-large-title);
+  --text-title1: var(--type-title1);
+  --text-title2: var(--type-title2);
+  --text-body: var(--type-body);
+  --text-subhead: var(--type-subhead);
+  --text-caption: var(--type-caption);
+  --text-popup-body: var(--type-popup-body);
+  --text-card-name: var(--type-card-name);
+}
+
+html {
+  background: var(--app-background);
+  color: var(--black);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip; /* full-width bands (100vw) never cause sideways scrolling */
+  font-family: var(--family-text);
+  font-size: var(--type-body);
+  font-weight: 500; /* appBody: medium */
+  line-height: 1.45;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Website-only focus ring (BrushStroke, see components/BrushStroke.tsx FocusRing). */
+.focus-ring {
+  display: none;
+}
+:focus-visible > .focus-ring {
+  display: block;
+}
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: none;
+}
+/* Anything without its own FocusRing still shows a plain ring, so focus is never invisible. */
+:focus-visible:not(:has(> .focus-ring)) {
+  outline: 3px solid var(--shadow-500);
+  outline-offset: 3px;
+}
+
+/* StevenOutline.swift: a thin white outline around the black cat, from four hard white shadows. */
+.steven-outline {
+  --outline-w: 3px;
+  filter: drop-shadow(var(--outline-w) 0 0 #fff) drop-shadow(calc(var(--outline-w) * -1) 0 0 #fff)
+    drop-shadow(0 var(--outline-w) 0 #fff) drop-shadow(0 calc(var(--outline-w) * -1) 0 #fff);
+}
+
+.sunburst-spin {
+  animation: sunburst-spin var(--motion-sunburst-spin) linear infinite;
+}
+@keyframes sunburst-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -100px;
+  z-index: 100;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--green-primary-500);
+  color: var(--green-primary-300);
+  font-family: var(--family-display);
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .sunburst-spin {
+    animation: none;
+  }
+}

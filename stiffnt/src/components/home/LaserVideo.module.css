@@ -1,0 +1,64 @@
+/* The recording's own shape: 3326 × 2160 */
+.box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3326 / 2160;
+  overflow: hidden;
+  background: var(--yellow-500);
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
+/* play/pause: a cream capsule with a black outline, always visible */
+.control {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--black);
+  border-radius: 999px;
+  background: var(--app-background);
+  color: var(--black);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .control:hover {
+    background: var(--green-primary-300);
+  }
+}
+
+/* CardVideo's bar: 10 tall, 14 in from the sides, 12 up from the bottom */
+.track {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 12px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--green-primary-100);
+  overflow: hidden;
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--green-primary-500);
+}

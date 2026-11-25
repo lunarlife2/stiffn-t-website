@@ -1,0 +1,65 @@
+.list {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listVertical {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.verticalLink {
+  justify-content: flex-start;
+}
+
+.root {
+  display: none;
+}
+
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--sidebar-ink);
+  cursor: pointer;
+}
+
+/* The panel under the header: the app's sidebar again (gradient, looping lines, 1.5 outline). */
+.panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background:
+    url("/images/ui/stroke-sidebar.png") top right / 181px auto no-repeat,
+    linear-gradient(to bottom right, var(--green-primary-200), var(--green-primary-300));
+  border-bottom: 1.5px solid var(--black);
+  box-shadow: 0 5px 0 0 var(--black);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .root {
+    display: block;
+  }
+}

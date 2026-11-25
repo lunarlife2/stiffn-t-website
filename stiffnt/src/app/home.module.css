@@ -1,0 +1,200 @@
+/* ── Hero: the turning green burst behind Steven (MysteryCanView / StreakView art area) ── */
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid var(--black); /* the popups' 2pt line under the art */
+}
+
+.heroInner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 48px 20px 56px;
+  text-align: center;
+}
+
+/* the stretching pose (exercise buddy layers, stacked) has empty room around it, so it's shown a bit bigger */
+.heroSteven {
+  width: clamp(240px, 36vw, 360px);
+  height: auto;
+  margin-bottom: -24px;
+}
+
+/* Website-only size (the app has no hero). Darumadrop in white with a hard 2pt black shade, like the
+   streak count in StreakView. */
+.heroTitle {
+  margin-top: -12px;
+  font-family: var(--family-display);
+  font-size: clamp(64px, 11vw, 120px);
+  line-height: 0.95;
+  color: var(--white);
+  text-shadow:
+    4px 4px 0 var(--black),
+    -1.5px -1.5px 0 var(--black),
+    1.5px -1.5px 0 var(--black),
+    -1.5px 1.5px 0 var(--black);
+}
+
+.heroPitch {
+  max-width: 34ch;
+  margin: 0 0 6px;
+  padding: 8px 20px;
+  border: 1.5px solid var(--black);
+  border-radius: 999px;
+  background: var(--app-background);
+  font-size: var(--type-title2);
+  font-weight: 600;
+}
+
+/* ── Page ── */
+.page {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 0 20px 72px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 64px;
+}
+
+.lead {
+  max-width: 62ch;
+  margin: 0;
+  font-size: var(--type-title2);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ── How it works: HomeView stretch cards (white, corner 20, outline 1, padding 10; picture yellow500 corner 14) ── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 10px 18px;
+  border: 1px solid var(--black);
+  border-radius: var(--stretch-card-radius);
+  background: var(--white);
+}
+
+.stepPicture {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+  border-radius: 14px;
+  background: var(--yellow-500);
+}
+
+.stepPicture > img {
+  width: auto;
+  height: 140px;
+}
+
+.stepNumber {
+  position: absolute;
+  left: 12px;
+  top: 8px;
+  font-family: var(--family-display);
+  font-size: var(--type-large-title);
+  color: var(--main-green);
+}
+
+/* name: SF Rounded 17 medium; text: subhead in shadow400 */
+.stepTitle {
+  margin: 8px 6px 0;
+  font-size: var(--type-title2);
+  font-weight: 600;
+}
+
+.stepText {
+  margin: 0 6px;
+  font-size: var(--type-body);
+  color: var(--shadow-400);
+}
+
+/* ── Features: Laser ── */
+.features {
+  scroll-margin-top: 80px;
+}
+
+/* ── Get the app: popup look (MysteryCanView: corner 24, outline 2, shade 5; art, 2pt line, words) ── */
+.getPanel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 820px) {
+  .getPanel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.getArt {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  overflow: hidden;
+  border-bottom: 2px solid var(--black);
+}
+
+@media (min-width: 820px) {
+  .getArt {
+    border-bottom: 0;
+    border-right: 2px solid var(--black);
+  }
+}
+
+.getBox {
+  position: relative;
+}
+
+.getWords {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 24px 22px 30px;
+}
+
+.getTitle {
+  font-family: var(--family-display);
+  font-size: var(--type-large-title);
+  font-weight: 400;
+}
+
+.getText {
+  margin: 0;
+  font-size: var(--type-popup-body);
+  font-weight: 400;
+  color: var(--shadow-400);
+}
+
+.requirementsTitle {
+  margin-top: 12px;
+  font-size: var(--type-title2);
+  font-weight: 600;
+}
+
+.requirements {
+  margin: 0 0 16px;
+  padding-left: 1.2em;
+}

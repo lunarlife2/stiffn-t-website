@@ -1,0 +1,135 @@
+/*
+ * Stiffn't design tokens.
+ * Every value is copied from the macOS app (repo lunarlife2/Sunrise-Challenge, origin/main 51b2b38,
+ * folder Sunrise/Stretchy-Lah!/). The source file is noted next to each group.
+ * Light mode only: the app's color sets have no dark-mode values.
+ */
+
+:root {
+  /* ── Colors ─────────────────────────────────────────────────────────────
+   * Source: Resource/Assets.xcassets/Colors/<name>.colorset/Contents.json (sRGB, alpha 1)
+   */
+  --app-background: #f7f2de; /* appBackground */
+
+  --green-primary-100: #f7f2de; /* greenPrimary100 */
+  --green-primary-200: #e9ffc9; /* greenPrimary200 */
+  --green-primary-300: #cff193; /* greenPrimary300 (= green4) */
+  --green-primary-400: #7ac743; /* greenPrimary400 (= green3) */
+  --green-primary-500: #3c9619; /* greenPrimary500 (= mainGreen) */
+  --green-primary-600: #096603; /* greenPrimary600 */
+  --main-green: #3c9619; /* mainGreen */
+  --green3: #7ac743; /* green3: days still to come in the streak trail */
+  --green4: #cff193; /* green4 */
+
+  --green-secondary-100: #d5ffc8; /* greenSecondary100 */
+  --green-secondary-200: #98eb89; /* greenSecondary200 */
+  --green-secondary-300: #48cc53; /* greenSecondary300 */
+  --green-secondary-400: #00781c; /* greenSecondary400 */
+
+  --yellow-100: #f7d992; /* yellow100 */
+  --yellow-200: #ffd000; /* yellow200 */
+  --yellow-300: #e59c00; /* yellow300 */
+  --yellow-400: #ac5914; /* yellow400 */
+  --yellow-500: #f4e6c2; /* yellow500: card picture background */
+
+  --orange-100: #eeecc9; /* orange100 */
+  --orange-200: #f6c674; /* orange200 */
+  --orange-300: #ff9d00; /* orange300 */
+  --orange-400: #ff7b00; /* orange400 */
+  --orange-500: #ac3214; /* orange500 */
+
+  --red-100: #ffece7; /* red100 */
+  --red-200: #ffc4bb; /* red200 */
+  --red-300: #ff8370; /* red300 */
+  --red-400: #d00000; /* red400 */
+
+  --blue-100: #bbe3fc; /* blue100 */
+  --blue-200: #77cbff; /* blue200 */
+  --blue-300: #009dff; /* blue300 */
+  --blue-400: #022ecb; /* blue400 */
+
+  --shadow-100: #d9d9d9; /* shadow100 */
+  --shadow-200: #acabab; /* shadow200 */
+  --shadow-300: #7c7c7c; /* shadow300 */
+  --shadow-400: #393939; /* shadow400 */
+  --shadow-500: #000000; /* shadow500 */
+
+  --sidebar-light: #edfece; /* sidebarLight */
+  --sidebar-deep: #d9f2a4; /* sidebarDeep */
+  --sidebar-ink: #2d641a; /* sidebarInk */
+
+  --white: #ffffff; /* SwiftUI .white (cards, Shop panel) */
+  --black: #000000; /* SwiftUI .black (outlines, solid shade) */
+
+  /* ── Typography ─────────────────────────────────────────────────────────
+   * Source: UIFeature/Component/AppTypography.swift, AppFont.swift
+   * The app's sizes are macOS points. The website multiplies every size by --type-scale
+   * (16 / 13, so Body 13 → 16px) and keeps the ratios between levels.
+   */
+  --type-scale: 1.2308; /* website-only: 16 / 13 */
+  --family-display: var(--font-daruma), ui-rounded, "SF Pro Rounded", var(--font-nunito), system-ui, sans-serif;
+  --family-text: ui-rounded, "SF Pro Rounded", var(--font-nunito), "Nunito", system-ui, sans-serif;
+
+  --type-page-title: calc(30px * var(--type-scale)); /* Darumadrop 30: page titles (HomeView, ShopView) */
+  --type-large-title: calc(26px * var(--type-scale)); /* appLargeTitle: Darumadrop 26 */
+  --type-title1: calc(22px * var(--type-scale)); /* appTitle1: SF Rounded 22 bold */
+  --type-title2: calc(17px * var(--type-scale)); /* appTitle2: SF Rounded 17 semibold */
+  --type-body: calc(13px * var(--type-scale)); /* appBody: SF Rounded 13 medium */
+  --type-subhead: calc(12px * var(--type-scale)); /* appSubhead: SF Rounded 12 regular */
+  --type-caption: calc(11px * var(--type-scale)); /* appCaption: SF Rounded 11 light */
+  --type-popup-body: calc(15px * var(--type-scale)); /* MysteryCanView / StreakView subtitle: system 15 */
+  --type-card-name: calc(20px * var(--type-scale)); /* ShopView card name: system 20 bold */
+  --type-coin: calc(22px * var(--type-scale)); /* ShopView coin count: Darumadrop 22 */
+
+  /* ── Buttons ────────────────────────────────────────────────────────────
+   * Source: UIFeature/Component/Button.swift (StiffntButtonBody)
+   */
+  /* Sizes scaled by --type-scale like the text, so the button keeps its proportions (36 → 44px). */
+  --button-height: calc(36px * var(--type-scale));
+  --button-height-small: calc(28px * var(--type-scale));
+  --button-padding-x: calc(16px * var(--type-scale));
+  --button-padding-x-small: calc(12px * var(--type-scale));
+  --button-font-size: calc(15px * var(--type-scale)); /* .daruma(15) */
+  --button-font-size-small: calc(13px * var(--type-scale)); /* .daruma(13) */
+  /* BrushStroke widths: fill edge 3 (small 2), outline 3.5 (small 2.5), seed 3 */
+
+  /* ── Boxes ──────────────────────────────────────────────────────────────
+   * Source: UIFeature/Component/Panel.swift, StiffntCard.swift, ShopView.swift, ItemCard.swift
+   */
+  --panel-radius: 15px; /* stiffntPanel default */
+  --panel-outline: 1px; /* stiffntPanel default */
+  --panel-shade: 5px; /* stiffntPanel default */
+  --popup-radius: 24px; /* MysteryCanView / StreakView / BoughtPopup: stiffntPanel(24, 2, 5) */
+  --popup-outline: 2px;
+  --card-radius: 16px; /* StiffntCardStyle */
+  --card-outline: 1.5px; /* StiffntCardStyle, Shop item card */
+  --shop-card-radius: 24px; /* ShopView itemCard */
+  --shop-card-picture-radius: 18px; /* ShopView itemCard picture box */
+  --shop-panel-shade: 4px; /* ShopView DurationPanel */
+  --item-card-radius: 24px; /* ItemCard (Accessories) */
+  --item-card-picture-radius: 13px; /* ItemCard picture box */
+  --dashboard-card-radius: 22px; /* HomeView section card, outline 1 */
+  --stretch-card-radius: 20px; /* HomeView stretch card, outline 1 */
+  --today-box-radius: 11px; /* StreakDaysRow today box */
+
+  /* ── Segmented pill ─────────────────────────────────────────────────────
+   * Source: UIFeature/Component/Toggle.swift (StiffntSegmented)
+   */
+  --segment-padding: calc(5px * var(--type-scale));
+  --segment-height: calc(38px * var(--type-scale));
+  --segment-padding-x: calc(16px * var(--type-scale));
+  --segment-font-size: calc(17px * var(--type-scale)); /* system 17 medium */
+
+  /* ── Motion ─────────────────────────────────────────────────────────────
+   * Source: Button.swift (.easeOut 0.12), MysteryCanView / Sunburst (linear 120 s spin)
+   */
+  --motion-button: 120ms ease-out;
+  --motion-sunburst-spin: 120s;
+
+  /* ── Website-only (not in the app) ──────────────────────────────────────
+   * Focus ring: a second BrushStroke (shadow500, lineWidth 3, seed 7) 4px outside the element.
+   * Approved by the owner because the app has no focus style.
+   */
+  --focus-ring-offset: 4px;
+  --page-max-width: 1200px;
+}

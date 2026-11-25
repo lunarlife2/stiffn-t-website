@@ -1,0 +1,28 @@
+.steven {
+  display: block;
+  aspect-ratio: 1;
+  overflow: visible;
+}
+
+/* The app sways it between a little back (−3…2°) and up (−14…−8°), 1.3–2.2 s a swing, never twice the same.
+   Here: a 7 s loop of uneven swings in that range, around Pivot.tail (330, 115 of 360 = 990, 345 of 1080). */
+.tail {
+  transform-box: view-box;
+  transform-origin: 990px 345px;
+  animation: tail-sway 7s ease-in-out infinite;
+}
+
+@keyframes tail-sway {
+  0% { transform: rotate(0deg); }
+  24% { transform: rotate(-11deg); }
+  46% { transform: rotate(1deg); }
+  68% { transform: rotate(-13deg); }
+  84% { transform: rotate(-2deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tail {
+    animation: none;
+  }
+}
