@@ -25,6 +25,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-height: 44px;
   border-radius: 12px;
   color: var(--sidebar-ink);
   text-decoration: none;
@@ -59,7 +60,8 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  min-height: 36px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 6px;
   color: var(--sidebar-ink);
   font-weight: 600;

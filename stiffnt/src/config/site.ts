@@ -12,8 +12,11 @@ export const site = {
     photoLifetimeHours: 24,
     /** Biggest upload accepted. Vercel Route Handlers take at most 4.5 MB per request, so 4. */
     maxUploadMB: 4,
-    /** Uploads allowed per visitor (IP) per hour; counted in server memory, best effort. */
-    uploadsPerHour: 10,
+    /**
+     * Uploads allowed per visitor (IP) per hour; counted in server memory, best effort.
+     * High because the event booth (2 laptops, usually on one venue WiFi = one shared IP) uploads hundreds per hour.
+     */
+    uploadsPerHour: 1000,
   },
   social: {
     instagram: "https://www.instagram.com/stiffnt.app?jplx=MnVodGk3NG5hYWVi&utm_source=qr",

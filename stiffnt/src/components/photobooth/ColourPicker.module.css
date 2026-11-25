@@ -1,0 +1,133 @@
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* small group label: subhead in shadow400 */
+.groupTitle {
+  margin: 0;
+  font-size: var(--type-subhead);
+  font-weight: 600;
+  color: var(--shadow-400);
+}
+
+/* equal-size swatches in one row; on phones the row scrolls sideways */
+.row {
+  display: flex;
+  gap: 8px;
+  padding: 8px 4px 4px;
+  overflow-x: auto;
+}
+
+.option {
+  position: relative;
+  display: flex;
+  flex: 0 0 84px;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 2px;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  cursor: pointer;
+}
+
+.option:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.swatchWrap {
+  position: relative;
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+/* the sample: the real colour or sunburst, with a black outline so every option looks like a button */
+.swatch {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1.5px solid var(--black);
+  border-radius: 999px;
+  transition: scale 0.15s ease-out;
+}
+
+/* chosen: a BrushStroke ring just outside the swatch */
+.ring {
+  position: absolute;
+  inset: -6px;
+}
+
+.check {
+  position: absolute;
+  right: -10px;
+  bottom: -6px;
+  z-index: 2;
+}
+
+/* hover: a little bigger */
+@media (hover: hover) {
+  .option:not(:disabled):hover .swatch {
+    scale: 1.08;
+  }
+}
+
+/* reduced motion: a ring instead of growing */
+@media (prefers-reduced-motion: reduce) {
+  .swatch {
+    transition: none;
+  }
+  .option:not(:disabled):hover .swatch {
+    scale: none;
+    box-shadow: 0 0 0 3px var(--green-primary-300);
+  }
+}
+
+.name {
+  font-size: var(--type-caption);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.chosen .name {
+  color: var(--green-primary-600);
+}
+
+/* Phones and portrait tablets: both groups side by side in ONE row that swipes sideways. */
+@media (max-width: 899px) {
+  .groups {
+    flex-direction: row;
+    gap: 14px;
+    overflow-x: auto;
+    padding: 0 10px;
+  }
+  .group {
+    flex: none;
+  }
+  .row {
+    overflow: visible;
+    padding: 6px 2px 2px;
+  }
+  .option {
+    flex-basis: clamp(76px, calc(100cqh - 40px), 120px);
+  }
+  /* the swatches grow with the options panel's height too */
+  .swatchWrap {
+    width: clamp(40px, calc(100cqh - 80px), 88px);
+    height: clamp(40px, calc(100cqh - 80px), 88px);
+  }
+}

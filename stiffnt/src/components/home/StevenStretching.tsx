@@ -1,7 +1,8 @@
 import { useId } from "react";
+import { preload } from "react-dom";
 import styles from "./StevenStretching.module.css";
 
-/** The pictures are 1080 × 1080; the app's canvas for this pose is 360, so 3 units per app point. */
+/** Drawn on a 1080 × 1080 canvas (the app's pictures; the files served are 760px copies, enough for the hero); the app's canvas for this pose is 360, so 3 units per app point. */
 const SIZE = 1080;
 const UNIT = SIZE / 360;
 /** StevenOutline.width(forSize:) for the 360-point cat: max(1.2, 360 × 0.014) ≈ 5 points. */
@@ -16,7 +17,13 @@ const OUTLINE = Math.max(1.2, 360 * 0.014) * UNIT;
  * redrawn every frame while the tail moves. (A CSS filter on a wrapper loses the moving tail in Safari.)
  * The outline grows the cat's shape by about 5 app points (StevenOutline). Still with reduced motion.
  */
+const BODY = "/images/steven/small/steven-stretching-body.png";
+const TAIL = "/images/steven/small/steven-stretching-tail.png";
+
 export function StevenStretching({ className }: { className?: string }) {
+  // He's the first thing on the page: start loading him with the HTML (an SVG <image> is found late otherwise).
+  preload(BODY, { as: "image", fetchPriority: "high" });
+  preload(TAIL, { as: "image", fetchPriority: "high" });
   const filter = `steven-outline-${useId().replace(/:/g, "")}`;
   return (
     <svg
@@ -37,8 +44,8 @@ export function StevenStretching({ className }: { className?: string }) {
         </filter>
       </defs>
       <g filter={`url(#${filter})`}>
-        <image href="/images/steven/steven-stretching-body.png" width={SIZE} height={SIZE} />
-        <image href="/images/steven/steven-stretching-tail.png" width={SIZE} height={SIZE} className={styles.tail} />
+        <image href={BODY} width={SIZE} height={SIZE} />
+        <image href={TAIL} width={SIZE} height={SIZE} className={styles.tail} />
       </g>
     </svg>
   );

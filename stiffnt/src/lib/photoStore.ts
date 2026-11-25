@@ -19,6 +19,8 @@ export const newPhotoId = customAlphabet(ID_ALPHABET, ID_LENGTH);
 export const isPhotoId = (id: string) => new RegExp(`^[${ID_ALPHABET}]{${ID_LENGTH}}$`).test(id);
 
 export type PhotoType = "image/png" | "image/jpeg";
+/** What was uploaded: one photo or a strip (kept in the file name, for the download name). */
+export type PhotoKind = "photo" | "strip";
 
 export const lifetimeMs = () => site.photobooth.photoLifetimeHours * 60 * 60 * 1000;
 export const isExpired = (uploadedAt: Date, now = Date.now()) => now - uploadedAt.getTime() >= lifetimeMs();
@@ -38,9 +40,10 @@ const extension = (type: PhotoType) => (type === "image/png" ? "png" : "jpg");
 const blobEnabled = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN) || process.env.NODE_ENV === "production";
 const DEV_DIR = join(process.cwd(), ".photobooth-dev");
 
-export async function savePhoto(id: string, bytes: Uint8Array, type: PhotoType): Promise<Date> {
+export async function savePhoto(id: string, bytes: Uint8Array, type: PhotoType, kind: PhotoKind): Promise<Date> {
+  const name = `${id}-${kind}.${extension(type)}`;
   if (blobEnabled()) {
-    await put(`${PREFIX}${id}.${extension(type)}`, Buffer.from(bytes), {
+    await put(`${PREFIX}${name}`, Buffer.from(bytes), {
       access: "private",
       contentType: type,
       addRandomSuffix: false,
@@ -50,12 +53,29 @@ export async function savePhoto(id: string, bytes: Uint8Array, type: PhotoType):
     return new Date();
   }
   await mkdir(DEV_DIR, { recursive: true });
-  await writeFile(join(DEV_DIR, `${id}.${extension(type)}`), bytes);
+  await writeFile(join(DEV_DIR, name), bytes);
   return new Date();
 }
 
+/** The stored file's name for an id (one lookup by prefix), or null. */
+async function findName(id: string): Promise<string | null> {
+  if (blobEnabled()) {
+    const page = await list({ prefix: `${PREFIX}${id}-`, limit: 1 }).catch(() => null);
+    return page?.blobs[0]?.pathname.slice(PREFIX.length) ?? null;
+  }
+  const files = await readdir(DEV_DIR).catch(() => [] as string[]);
+  return files.find((file) => file.startsWith(`${id}-`)) ?? null;
+}
+
+const parseName = (name: string) => {
+  const match = /^[A-Za-z0-9]+-(photo|strip)\.(png|jpg)$/.exec(name);
+  if (!match) return null;
+  return { kind: match[1] as PhotoKind, type: (match[2] === "png" ? "image/png" : "image/jpeg") as PhotoType };
+};
+
 export type StoredPhoto = {
   type: PhotoType;
+  kind: PhotoKind;
   uploadedAt: Date;
   body: ReadableStream<Uint8Array> | Uint8Array;
   size: number;
@@ -64,20 +84,18 @@ export type StoredPhoto = {
 /** The photo with its upload time, or null if there's none. Callers check `isExpired` themselves. */
 export async function readPhoto(id: string): Promise<StoredPhoto | null> {
   if (!isPhotoId(id)) return null;
-  for (const type of ["image/png", "image/jpeg"] as PhotoType[]) {
-    const pathname = `${PREFIX}${id}.${extension(type)}`;
-    if (blobEnabled()) {
-      const result = await get(pathname, { access: "private" }).catch(() => null);
-      if (result && result.statusCode === 200) {
-        return { type, uploadedAt: result.blob.uploadedAt, body: result.stream, size: result.blob.size };
-      }
-    } else {
-      const file = join(DEV_DIR, `${id}.${extension(type)}`);
-      const info = await stat(file).catch(() => null);
-      if (info) return { type, uploadedAt: info.mtime, body: new Uint8Array(await readFile(file)), size: info.size };
-    }
+  const name = await findName(id);
+  const parsed = name ? parseName(name) : null;
+  if (!name || !parsed) return null;
+  if (blobEnabled()) {
+    const result = await get(`${PREFIX}${name}`, { access: "private" }).catch(() => null);
+    if (!result || result.statusCode !== 200) return null;
+    return { ...parsed, uploadedAt: result.blob.uploadedAt, body: result.stream, size: result.blob.size };
   }
-  return null;
+  const file = join(DEV_DIR, name);
+  const info = await stat(file).catch(() => null);
+  if (!info) return null;
+  return { ...parsed, uploadedAt: info.mtime, body: new Uint8Array(await readFile(file)), size: info.size };
 }
 
 /** Only the upload time (for the /p/<id> page), without reading the picture. */
@@ -90,12 +108,10 @@ export async function photoUploadedAt(id: string): Promise<Date | null> {
 
 export async function deletePhoto(id: string) {
   if (!isPhotoId(id)) return;
-  if (blobEnabled()) {
-    await del([`${PREFIX}${id}.png`, `${PREFIX}${id}.jpg`]).catch(() => {});
-  } else {
-    await rm(join(DEV_DIR, `${id}.png`), { force: true });
-    await rm(join(DEV_DIR, `${id}.jpg`), { force: true });
-  }
+  const name = await findName(id);
+  if (!name) return;
+  if (blobEnabled()) await del(`${PREFIX}${name}`).catch(() => {});
+  else await rm(join(DEV_DIR, name), { force: true });
 }
 
 /** Deletes every photo older than the lifetime. Returns how many were deleted. Used by the cron job. */

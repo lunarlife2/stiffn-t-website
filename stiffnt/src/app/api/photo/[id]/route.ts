@@ -1,4 +1,5 @@
 import { isExpired, readPhoto } from "@/lib/photoStore";
+import { photoFileName } from "@/lib/photobooth";
 
 /**
  * GET /api/photo/<id> — the picture itself, served through the site (the Blob store is private), only while it's
@@ -13,7 +14,7 @@ export async function GET(request: Request, { params }: RouteContext<"/api/photo
   }
 
   const download = new URL(request.url).searchParams.has("download");
-  const name = `stiffnt-photobooth.${photo.type === "image/png" ? "png" : "jpg"}`;
+  const name = photoFileName(photo.kind === "strip" ? "strip" : "single", photo.uploadedAt, photo.type === "image/png" ? "png" : "jpg");
   return new Response(photo.body as BodyInit, {
     headers: {
       "Content-Type": photo.type,

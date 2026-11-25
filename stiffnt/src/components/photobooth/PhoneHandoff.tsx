@@ -18,7 +18,7 @@ type State =
  * (made in the browser with `qrcode`, black on white) and the link with Copy. Nothing is uploaded before
  * "Upload and show QR" is pressed.
  */
-export function PhoneHandoff({ blob, onClose }: { blob: Blob; onClose: () => void }) {
+export function PhoneHandoff({ blob, kind, onClose }: { blob: Blob; kind: "photo" | "strip"; onClose: () => void }) {
   const [state, setState] = useState<State>({ step: "consent" });
   const [copied, setCopied] = useState(false);
   const box = useRef<HTMLDivElement>(null);
@@ -34,7 +34,7 @@ export function PhoneHandoff({ blob, onClose }: { blob: Blob; onClose: () => voi
     try {
       const response = await fetch("/api/photo", {
         method: "POST",
-        headers: { "Content-Type": blob.type || "image/png" },
+        headers: { "Content-Type": blob.type || "image/png", "X-Photo-Kind": kind },
         body: blob,
       });
       const data = await response.json().catch(() => ({}));
@@ -42,7 +42,7 @@ export function PhoneHandoff({ blob, onClose }: { blob: Blob; onClose: () => voi
         setState({ step: "error", message: data.message ?? "We couldn't upload your photo. Please try again." });
         return;
       }
-      const link = new URL(data.path, window.location.origin).toString();
+      const link: string = data.url ?? new URL(data.path, window.location.origin).toString();
       const qr = await QRCode.toDataURL(link, {
         errorCorrectionLevel: "M",
         margin: 2,

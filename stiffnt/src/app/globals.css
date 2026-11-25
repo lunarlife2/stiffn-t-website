@@ -134,11 +134,25 @@ button:focus-visible,
   border: 0;
 }
 
+/* Website-only: the one gap between Home sections (64 on wide screens, 48 on phones). */
+:root {
+  --section-gap: 64px;
+}
+
+@media (max-width: 599px) {
+  :root {
+    --section-gap: 48px;
+  }
+}
+
 .skip-link {
   position: absolute;
   left: 12px;
   top: -100px;
   z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: 8px 16px;
   border-radius: 999px;
   background: var(--green-primary-500);
@@ -161,4 +175,10 @@ button:focus-visible,
   .sunburst-spin {
     animation: none;
   }
+}
+
+/* Photobooth setup fills the window under the header: the site footer waits for the result screen
+   (the Photobooth sets data-photobooth="setup" on <body> while setting up). */
+body[data-photobooth="setup"] > footer {
+  display: none;
 }

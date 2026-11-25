@@ -1,4 +1,6 @@
-/* ── Hero: the turning green burst behind Steven (MysteryCanView / StreakView art area) ── */
+/* ── Hero: the turning green burst behind Steven (MysteryCanView / StreakView art area) ──
+   Steven, the name, the pitch and Download always fit in the first screen: Steven is sized by the window's
+   height as well as its width. Stacked on phones and tablets; Steven beside the words on wide screens. */
 .hero {
   position: relative;
   overflow: hidden;
@@ -10,24 +12,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 8px;
   max-width: var(--page-max-width);
   margin: 0 auto;
-  padding: 48px 20px 56px;
+  padding: 24px 20px 40px;
   text-align: center;
 }
 
-/* the stretching pose (exercise buddy layers, stacked) has empty room around it, so it's shown a bit bigger */
+/* the stretching pose has empty room around it, so it's shown a bit bigger than the words would suggest */
 .heroSteven {
-  width: clamp(240px, 36vw, 360px);
+  width: min(clamp(220px, 40vw, 380px), 38svh);
   height: auto;
-  margin-bottom: -24px;
+  margin-bottom: -16px;
+}
+
+.heroWords {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
 /* Website-only size (the app has no hero). Darumadrop in white with a hard 2pt black shade, like the
    streak count in StreakView. */
 .heroTitle {
-  margin-top: -12px;
   font-family: var(--family-display);
   font-size: clamp(64px, 11vw, 120px);
   line-height: 0.95;
@@ -40,42 +48,89 @@
 }
 
 .heroPitch {
-  max-width: 34ch;
-  margin: 0 0 6px;
-  padding: 8px 20px;
+  max-width: 30ch;
+  margin: 0;
+  padding: 10px 20px 12px;
   border: 1.5px solid var(--black);
-  border-radius: 999px;
+  border-radius: 24px;
   background: var(--app-background);
   font-size: var(--type-title2);
   font-weight: 600;
+  line-height: 1.35;
+}
+
+/* the slogan: Darumadrop, mainGreen, the main tagline; the line under it says what the app does */
+.heroSlogan {
+  display: block;
+  font-family: var(--family-display);
+  font-size: var(--type-title1);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--main-green);
+}
+
+.heroLine {
+  display: block;
+  font-size: var(--type-body);
+  font-weight: 500;
+}
+
+@media (min-width: 900px) {
+  .heroInner {
+    flex-direction: row;
+    justify-content: center;
+    gap: clamp(24px, 4vw, 64px);
+    padding: 32px 20px;
+    text-align: left;
+  }
+
+  .heroSteven {
+    width: min(460px, 40vw, calc(100svh - 200px));
+    margin: 0;
+    flex: none;
+  }
+
+  .heroWords {
+    align-items: flex-start;
+    gap: 18px;
+  }
 }
 
 /* ── Page ── */
 .page {
   max-width: var(--page-max-width);
   margin: 0 auto;
-  padding: 0 20px 72px;
+  padding: 0 20px var(--section-gap);
 }
 
 .section {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding-top: 64px;
+  padding-top: var(--section-gap);
 }
 
+/* About and Accessories: title and words centred over the column */
+.centred {
+  align-items: center;
+  text-align: center;
+}
+
+/* about 65 characters a line */
 .lead {
-  max-width: 62ch;
+  max-width: 34em;
   margin: 0;
   font-size: var(--type-title2);
   font-weight: 500;
   line-height: 1.5;
 }
 
-/* ── How it works: HomeView stretch cards (white, corner 20, outline 1, padding 10; picture yellow500 corner 14) ── */
+/* ── How it works: HomeView stretch cards (white, corner 20, outline 1, padding 10; picture yellow500 corner 14)
+   Three equal cards in a row (the grid stretches them to the tallest); every picture box is the same size with
+   the art at the same 120px. On phones each card is the picture on the left and the words on the right. ── */
 .steps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
   margin: 0;
   padding: 0;
@@ -97,14 +152,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 180px;
+  height: 170px;
+  flex: none;
   border-radius: 14px;
   background: var(--yellow-500);
 }
 
 .stepPicture > img {
-  width: auto;
-  height: 140px;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+/* the ShopView coin pill, shown at 1.5× so it fills the box like the pictures */
+.stepCoin {
+  display: inline-flex;
+  flex: none;
+  white-space: nowrap;
+  scale: 1.5;
 }
 
 .stepNumber {
@@ -113,7 +178,14 @@
   top: 8px;
   font-family: var(--family-display);
   font-size: var(--type-large-title);
+  line-height: 1;
   color: var(--main-green);
+}
+
+.stepWords {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 /* name: SF Rounded 17 medium; text: subhead in shadow400 */
@@ -129,9 +201,125 @@
   color: var(--shadow-400);
 }
 
+/* three in a row from tablets up, so no card is left alone in a row of its own */
+@media (min-width: 700px) {
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 599px) {
+  .step {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .stepPicture {
+    width: 96px;
+    height: 96px;
+  }
+
+  .stepPicture > img {
+    width: 72px;
+    height: 72px;
+  }
+
+  .stepCoin {
+    margin-top: 14px; /* clear of the number */
+    scale: 0.6;
+  }
+
+  .stepNumber {
+    left: 8px;
+    top: 6px;
+    font-size: var(--type-title1);
+  }
+
+  .stepTitle {
+    margin: 0;
+  }
+
+  .stepText {
+    margin: 0;
+  }
+}
+
 /* ── Features: Laser ── */
 .features {
   scroll-margin-top: 80px;
+}
+
+/* ── Photobooth: the same popup look as "Get Stiffn't" (corner 24, outline 2, shade 5; art, 2pt line, words) ── */
+.boothCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 820px) {
+  .boothCard {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  }
+}
+
+/* Steven in his glasses on the yellow500 picture box (ItemCard) */
+.boothArt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--yellow-500);
+  border-bottom: 2px solid var(--black);
+}
+
+@media (min-width: 820px) {
+  .boothArt {
+    border-bottom: 0;
+    border-right: 2px solid var(--black);
+  }
+}
+
+.boothSteven {
+  position: relative;
+  display: block;
+  width: min(100%, 220px);
+  aspect-ratio: 1;
+  --outline-w: 2.5px;
+}
+
+.boothSteven > img:first-child {
+  width: 100%;
+  height: 100%;
+}
+
+.boothGlasses {
+  position: absolute;
+  height: auto;
+  max-width: none;
+}
+
+.boothWords {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px 22px 30px;
+}
+
+.boothTitle {
+  font-family: var(--family-display);
+  font-size: var(--type-large-title);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.boothText {
+  max-width: 34em;
+  margin: 0 0 6px;
+  font-size: var(--type-popup-body);
+  color: var(--shadow-400);
 }
 
 /* ── Get the app: popup look (MysteryCanView: corner 24, outline 2, shade 5; art, 2pt line, words) ── */

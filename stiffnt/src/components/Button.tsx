@@ -18,6 +18,8 @@ export type ButtonKind =
 type Common = {
   kind?: ButtonKind;
   small?: boolean;
+  /** Website-only: 4/3 of the normal size, for the main Download buttons. */
+  large?: boolean;
   wide?: boolean;
   /** Shown pressed while it's the chosen one (StiffntButtonStyle.isChosen). */
   chosen?: boolean;
@@ -64,8 +66,16 @@ function Label({ kind, small, children }: { kind: ButtonKind; small?: boolean; c
   );
 }
 
-function classes({ kind = "primary", small, wide, chosen, className }: Omit<Common, "children">) {
-  return [styles.button, styles[kind], small && styles.small, wide && styles.wide, chosen && styles.chosen, className]
+function classes({ kind = "primary", small, large, wide, chosen, className }: Omit<Common, "children">) {
+  return [
+    styles.button,
+    styles[kind],
+    small && styles.small,
+    large && styles.large,
+    wide && styles.wide,
+    chosen && styles.chosen,
+    className,
+  ]
     .filter(Boolean)
     .join(" ");
 }
@@ -93,6 +103,7 @@ export function Button({
 export function ButtonLink({
   kind = "primary",
   small,
+  large,
   wide,
   chosen,
   className,
@@ -102,7 +113,7 @@ export function ButtonLink({
 }: Common & { href: string } & Omit<ComponentProps<"a">, "children" | "href">) {
   const external = /^https?:/.test(href);
   const plain = external || /^(blob|data):/.test(href) || rest.download !== undefined;
-  const props = { className: classes({ kind, small, wide, chosen, className }), ...rest };
+  const props = { className: classes({ kind, small, large, wide, chosen, className }), ...rest };
   const inner = (
     <>
       <Strokes kind={kind} small={small} />
@@ -132,9 +143,19 @@ export function ButtonLink({
 /**
  * "Download for Mac" with "Beta via TestFlight" under it. Links to site.downloadUrl in a new tab.
  */
-export function DownloadButton({ small, wide, className }: { small?: boolean; wide?: boolean; className?: string }) {
+export function DownloadButton({
+  small,
+  large,
+  wide,
+  className,
+}: {
+  small?: boolean;
+  large?: boolean;
+  wide?: boolean;
+  className?: string;
+}) {
   return (
-    <ButtonLink kind="primary" small={small} wide={wide} className={className} href={site.downloadUrl}>
+    <ButtonLink kind="primary" small={small} large={large} wide={wide} className={className} href={site.downloadUrl}>
       <span className={styles.stack}>
         <span>Download for Mac</span>
         <span className={styles.subline}>Beta via TestFlight</span>

@@ -45,11 +45,16 @@ export async function POST(request: Request) {
   const type = sniffImageType(bytes);
   if (!type) return badType();
 
+  const kind = request.headers.get("x-photo-kind") === "strip" ? "strip" : "photo";
   const id = newPhotoId();
   try {
-    const uploadedAt = await savePhoto(id, bytes, type);
+    const uploadedAt = await savePhoto(id, bytes, type, kind);
+    // The link for the QR code always points at the public production address on Vercel (never a protected
+    // deployment URL), so people can open it without any login. Locally it's left to the browser.
+    const production = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+    const url = production ? `https://${production}/p/${id}` : null;
     return Response.json(
-      { id, path: `/p/${id}`, expiresAt: new Date(uploadedAt.getTime() + lifetimeMs()).toISOString() },
+      { id, path: `/p/${id}`, url, expiresAt: new Date(uploadedAt.getTime() + lifetimeMs()).toISOString() },
       { status: 201, headers: { "Cache-Control": "no-store" } },
     );
   } catch {

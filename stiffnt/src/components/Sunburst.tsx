@@ -11,11 +11,14 @@ export function Sunburst({
   dark = "var(--green-primary-400)",
   light = "var(--green-primary-300)",
   spin = true,
+  fit = false,
 }: {
   rays?: number;
   dark?: string;
   light?: string;
   spin?: boolean;
+  /** Size it to its parent only (small swatches); by default it's at least 1.5× the window height. */
+  fit?: boolean;
 }) {
   const gradient = `sunburst-${useId().replace(/:/g, "")}`;
   const step = (2 * Math.PI) / rays;
@@ -36,7 +39,7 @@ export function Sunburst({
         position: "absolute",
         left: "50%",
         top: "50%",
-        width: "max(150%, 150vh)",
+        width: fit ? "150%" : "max(150%, 150vh)",
         aspectRatio: "1",
         translate: "-50% -50%",
         pointerEvents: "none",

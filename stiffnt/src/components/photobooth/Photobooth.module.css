@@ -1,97 +1,337 @@
-.booth {
+/*
+ * Photobooth setup: the live preview and the options on screen together, no page scrolling.
+ * The preview's width (--pw) is measured in Photobooth.tsx from the space left on screen (4:3).
+ * Gaps follow the app's spacing (HomeView: 10–22 pt): 8–16 px here, never more than 24.
+ */
+
+/* ══ Desktop / landscape tablet (≥ 900 px) ══ */
+.setup {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 24px;
+  grid-template-columns: var(--pw, 640px) minmax(320px, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 24px;
+  row-gap: 12px;
   align-items: start;
 }
 
-@media (min-width: 960px) {
-  .booth {
-    grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+/* one compact row: title left, mode switch in the middle, How it works & privacy right */
+.titleRow {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.titleRow > :first-child {
+  justify-self: start;
+}
+
+.titleRow > :last-child {
+  justify-self: end;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.previewBox {
+  position: relative;
+  width: var(--pw, 640px);
+  max-width: 100%;
+}
+
+/* the strip indicator left of the button, the button centred */
+.actionRow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--button-height);
+}
+
+.actionRow > :first-child:not(:only-child) {
+  justify-self: end;
+}
+
+.actionRow > :only-child {
+  grid-column: 2;
+}
+
+/* while shooting: the row holds the countdown text and two small buttons */
+.actionRow:has(.countText) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* the biggest button on the page */
+.takeButton {
+  grid-column: 2;
+  min-width: 260px;
+  min-height: calc(44px * var(--type-scale)) !important;
+  font-size: var(--type-title2) !important;
+}
+
+/* Strip: three small boxes, "3 photos", the current shot in greenPrimary500 while shooting */
+.indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.indicatorBoxes {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.indicatorBox {
+  display: block;
+  width: 20px;
+  height: 8px;
+  border: 1.5px solid var(--black);
+  border-radius: 3px;
+  background: var(--white);
+}
+
+.indicatorDone {
+  background: var(--green-primary-300);
+}
+
+.indicatorCurrent {
+  background: var(--green-primary-500);
+}
+
+.indicatorText {
+  font-size: var(--type-subhead);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ── Options panel: top = the preview's top, bottom = the button row's bottom; only it scrolls ── */
+.panel {
+  align-self: stretch;
+  contain: size; /* never makes the row taller than the preview + button */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: 1.5px solid var(--black);
+  border-radius: var(--panel-radius);
+  background: var(--white);
+  overflow: hidden;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  border-bottom: 1.5px solid var(--black);
+  background: var(--app-background);
+}
+
+.tab {
+  position: relative;
+  flex: 1;
+  min-height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--family-text);
+  font-size: var(--type-body);
+  font-weight: 600;
+  color: var(--shadow-500);
+  cursor: pointer;
+}
+
+.tabChosen {
+  background: var(--green-primary-500);
+  color: var(--app-background);
+}
+
+@media (hover: hover) {
+  .tab:not(.tabChosen):hover {
+    background: var(--green-primary-300);
   }
 }
 
-/* ── Frames around the live picture (same as the PNG: lib/photobooth.ts) ── */
-.frame {
-  position: relative;
-  overflow: hidden;
-  border-radius: 24px;
+.tabPanel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 10px;
 }
 
-.frame-none {
-  padding: 0;
+.stickersTab {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.frame-outline {
-  padding: 4%;
-  background: var(--app-background);
-  border: 1.5px solid var(--black);
+.stickerTools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.frame-sunburst {
-  padding: 8%;
-  border: 2px solid var(--black);
+.tray {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
 }
 
-.photo {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background: var(--shadow-400);
-  touch-action: none;
-  user-select: none;
+/* ══ Phones and portrait tablets (< 900 px): preview on top, options, Take photo at the bottom ══ */
+@media (max-width: 899px) {
+  /* exactly the window under the header; whatever the preview doesn't need goes to the options */
+  .setup {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* full width for the options and the button row */
+    gap: 8px;
+    height: calc(100dvh - var(--header-h, 64px) - 6px);
+  }
+
+  .titleRow {
+    grid-template-columns: 1fr auto;
+    row-gap: 6px;
+    min-height: 0;
+  }
+
+  /* the mode switch under the title, centred */
+  .titleRow > :nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+  }
+
+  .left {
+    display: contents;
+  }
+
+  .previewBox {
+    order: 2;
+    align-self: center;
+  }
+
+  .panel {
+    order: 3;
+    contain: none;
+    flex: 1 1 auto;
+    min-height: 0;
+    border-radius: 14px;
+  }
+
+  /* the indicator (strip only), then Take photo filling the rest of the width */
+  .actionRow {
+    order: 4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .actionRow .indicator {
+    flex: none;
+  }
+
+  .takeButton {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .tabs {
+    padding: 4px;
+  }
+
+  .tab {
+    min-height: 34px;
+    font-size: var(--type-subhead);
+  }
+
+  /* one horizontal row, swiped sideways; at least 132 px, and it takes any height left over, with its items growing
+     to match (container units), so there's no empty space under Take photo */
+  .tabPanel {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 132px;
+    overflow: hidden;
+    padding: 0;
+    container-type: size;
+  }
+
+  .tray {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 10px 6px;
+  }
+
+  .tray > li {
+    flex: 0 0 clamp(68px, calc(100cqh - 24px), 150px);
+  }
+
+  .stickersTab {
+    gap: 4px;
+  }
+
+  .stickerTools {
+    padding: 0 10px;
+  }
 }
 
-.frame-outline .photo,
-.frame-sunburst .photo {
-  border: 2px solid var(--black);
-  border-radius: 24px;
-  box-shadow: 5px 5px 0 0 var(--black);
-  overflow: hidden;
+.slotInner {
+  position: absolute;
+  inset: 0;
 }
 
-.video,
-.uploaded {
+/* mirrored, like a mirror (the photo is mirrored the same way) */
+.video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-/* mirrored, like a mirror */
-.video {
   scale: -1 1;
 }
 
-.notice {
+.starting {
   position: absolute;
   inset: 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 20px;
-  background: var(--app-background);
-  text-align: center;
-  overflow: auto;
-}
-
-.notice p {
-  max-width: 40ch;
   margin: 0;
-}
-
-.noticeTitle {
-  font-family: var(--family-display);
-  font-size: var(--type-large-title);
+  color: var(--white);
+  text-shadow: 0 1px 2px var(--black);
+  pointer-events: none;
 }
 
 /* ── Stickers ── */
 .sticker {
   position: absolute;
   translate: -50% -50%;
+  z-index: 2;
+}
+
+.stickerLocked {
+  pointer-events: none;
+}
+
+.stickerLocked img,
+.stickerBody img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
 }
 
 .stickerBody {
@@ -110,22 +350,17 @@
   cursor: grabbing;
 }
 
-.stickerBody img {
-  display: block;
-  width: 100%;
-  height: auto;
-  pointer-events: none;
-}
-
 .stickerSelected .stickerBody {
   outline: 2px dashed var(--white);
   outline-offset: 2px;
 }
 
-/* CloseDot-like remove button and a resize handle, 32px for fingers */
+/* remove button and resize handle, 32px for fingers; placed by their middle (Photobooth.tsx keeps them in the photo) */
 .removeDot,
 .resizeDot {
   position: absolute;
+  z-index: 3;
+  translate: -50% -50%;
   width: 32px;
   height: 32px;
   border: 1.5px solid var(--black);
@@ -134,8 +369,6 @@
 }
 
 .removeDot {
-  top: -16px;
-  right: -16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -146,41 +379,46 @@
   cursor: pointer;
 }
 
+/* resize: greenPrimary500 with a white two-way arrow, so it reads as "drag to resize" */
 .resizeDot {
-  right: -16px;
-  bottom: -16px;
-  background: var(--green-primary-300);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green-primary-500);
+  color: var(--white);
   cursor: nwse-resize;
 }
 
-/* ── Countdown ── */
+.resizeDot svg {
+  transform: rotate(90deg);
+  pointer-events: none;
+}
+
+.lockedHint {
+  margin: 0;
+  font-size: var(--type-subhead);
+  font-weight: 600;
+  color: var(--shadow-400);
+}
+
+/* ── Countdown, progress, flash ── */
 .countdown {
   position: absolute;
   inset: 0;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
 }
 
-.countStill,
 .countPop {
   font-family: var(--family-display);
-  font-size: clamp(96px, 20vw, 200px);
+  font-size: clamp(56px, 14cqw, 180px);
   line-height: 1;
   color: var(--white);
   text-shadow: 5px 5px 0 var(--black);
-}
-
-.countPop {
   animation: count-pop 1s ease-out both;
-}
-
-/* Reduced motion: the numbers just change, no animation. */
-@media (prefers-reduced-motion: reduce) {
-  .countPop {
-    animation: none;
-  }
 }
 
 @keyframes count-pop {
@@ -195,12 +433,76 @@
   font-weight: 600;
 }
 
-/* ── Controls ── */
-.controls {
+
+/* a short white flash after each photo */
+.flash {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: var(--white);
+  opacity: 0;
+  pointer-events: none;
+  animation: flash 0.35s ease-out;
+}
+
+@keyframes flash {
+  0% { opacity: 0.95; }
+  100% { opacity: 0; }
+}
+
+/* Reduced motion: no flash and no countdown animation (the numbers still show). */
+@media (prefers-reduced-motion: reduce) {
+  .flash {
+    display: none;
+  }
+  .countPop {
+    animation: none;
+  }
+}
+
+
+/* ── Camera blocked / missing: the popup look ── */
+.help {
+  width: 100%;
+  max-width: 620px;
+}
+
+.helpArt {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  background: var(--yellow-500);
+  border-bottom: 2px solid var(--black);
+}
+
+.helpWords {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 22px 22px 26px;
 }
+
+.helpTitle {
+  font-family: var(--family-display);
+  font-size: var(--type-large-title);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.helpText {
+  margin: 0;
+  font-size: var(--type-popup-body);
+  color: var(--shadow-400);
+}
+
+.helpSteps {
+  margin: 0 0 8px;
+  padding-left: 1.2em;
+  font-size: var(--type-body);
+  line-height: 1.5;
+}
+
 
 .actions {
   display: flex;
@@ -209,25 +511,9 @@
   gap: 12px 16px;
 }
 
-.group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
 
-.groupTitle {
-  font-size: var(--type-title2);
-  font-weight: 600;
-}
 
-.tray {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
+
 
 .trayItem {
   position: relative;
@@ -243,8 +529,13 @@
   cursor: pointer;
 }
 
+.trayItem:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 @media (hover: hover) {
-  .trayItem:hover {
+  .trayItem:not(:disabled):hover {
     background: var(--green-primary-300);
   }
 }
@@ -254,43 +545,6 @@
   height: auto;
 }
 
-/* ── Result ── */
-.result {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 24px;
-  align-items: start;
-  grid-column: 1 / -1;
-}
-
-@media (min-width: 900px) {
-  .result {
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-}
-
-.resultImage {
-  width: 100%;
-  max-width: 900px;
-  height: auto;
-  border-radius: 12px;
-}
-
-/* the 600 × 1800 strip, shown at most 70% of the window tall */
-.resultStrip {
-  width: auto;
-  height: min(70vh, 900px);
-  max-width: 100%;
-  justify-self: center;
-  border: 1.5px solid var(--black);
-  box-shadow: 5px 5px 0 0 var(--black);
-}
-
-.resultSide {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
 
 /* ── Get it on my phone (Panel: corner 24, outline 2, shade 5) ── */
 .handoff {
@@ -326,7 +580,7 @@
   align-items: flex-start;
 }
 
-/* dark ink on light paper, with a quiet zone (from the QR margin) and a thin outline */
+/* dark ink on light paper, with a quiet zone and a thin outline */
 .qr {
   width: 200px;
   height: 200px;
@@ -360,84 +614,83 @@
   color: var(--green-primary-600);
 }
 
-/* No camera: the message sets the height, so nothing is cut off on small screens. */
-.photo:has(> .notice) {
-  aspect-ratio: auto;
-  min-height: 300px;
-}
-.photo:has(> .notice) > .notice {
-  position: relative;
-  inset: auto;
-  min-height: 300px;
-}
 
-/* ── Modes ── */
-.stage {
+
+/* ══ Result ══ */
+.resultPage {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 16px;
-  min-width: 0;
+  gap: 12px;
 }
 
-.stage > .frame {
+.resultPage .titleRow {
+  grid-template-columns: 1fr auto;
+}
+
+.result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+  padding-bottom: 24px;
+}
+
+@media (min-width: 900px) {
+  /* buttons beside the picture, staying in view while a tall strip scrolls */
+  .result {
+    grid-template-columns: minmax(0, 1fr) 420px;
+  }
+  .resultSide {
+    order: 2;
+    position: sticky;
+    top: calc(var(--header-h, 72px) + 16px);
+  }
+  .resultBox {
+    order: 1;
+    justify-self: end;
+  }
+}
+
+.resultBox {
+  width: min(100%, 420px);
+  justify-self: center;
+}
+
+.resultImage {
+  display: block;
   width: 100%;
-}
-
-/* Strip: the paper colour around a 6:5 photo, like one photo of the strip */
-.frameStrip {
-  --strip-cream: var(--app-background);
-  --strip-green: var(--green-primary-300);
-  --strip-yellow: var(--yellow-200);
-  padding: 5%;
-  background: var(--strip-fill, var(--app-background));
+  height: auto;
   border: 1.5px solid var(--black);
+  box-shadow: 5px 5px 0 0 var(--black);
 }
 
-.photoStrip {
-  aspect-ratio: 6 / 5;
-  border: 2px solid var(--black);
-  border-radius: 18px;
+.resultSide {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.hint {
-  margin: -4px 0 0;
-  font-size: var(--type-subhead);
-  color: var(--shadow-400);
+.resultBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
 }
 
-/* "2 / 3" while a strip is being taken */
-.progress {
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  translate: -50% 0;
-  padding: 4px 14px;
-  border: 1.5px solid var(--black);
-  border-radius: 999px;
-  background: var(--app-background);
-  font-family: var(--family-display);
-  font-size: var(--type-title2);
-  pointer-events: none;
-}
-
-/* a short white flash after each photo; none with reduced motion */
-.flash {
-  position: absolute;
-  inset: 0;
-  background: var(--white);
-  opacity: 0;
-  pointer-events: none;
-  animation: flash 0.35s ease-out;
-}
-
-@keyframes flash {
-  0% { opacity: 0.95; }
-  100% { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .flash {
-    display: none;
+/* phones: the buttons in a bar fixed to the bottom of the screen */
+@media (max-width: 899px) {
+  .result {
+    padding-bottom: calc(110px + env(safe-area-inset-bottom));
+  }
+  .resultBar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 35;
+    justify-content: center;
+    padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+    border-top: 1.5px solid var(--black);
+    background: var(--app-background);
   }
 }

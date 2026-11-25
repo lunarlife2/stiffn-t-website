@@ -24,18 +24,16 @@
   }
 }
 
+/* the same width for a photo and a strip (as on the Photobooth's result) */
 .photoPanel {
-  width: fit-content;
-  max-width: 100%;
+  width: min(100%, 444px);
   padding: 12px;
   justify-self: center;
 }
 
 .photo {
   display: block;
-  max-width: 100%;
-  max-height: 78vh;
-  width: auto;
+  width: 100%;
   height: auto;
   border-radius: 12px;
   -webkit-touch-callout: default; /* iPhone: press and hold to save */

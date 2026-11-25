@@ -21,6 +21,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-height: 44px;
   border-radius: 12px;
   color: var(--sidebar-ink);
   text-decoration: none;

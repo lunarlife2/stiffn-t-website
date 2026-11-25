@@ -24,6 +24,7 @@
 .slot:nth-child(3) { z-index: 3; --tilt: 10deg; --rise: 0px; }
 
 .card {
+  margin: 0; /* a <figure> */
   display: flex;
   flex-direction: column;
   align-items: center;

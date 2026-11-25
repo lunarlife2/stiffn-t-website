@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { DownloadButton } from "@/components/Button";
+import { ButtonLink, DownloadButton } from "@/components/Button";
 import { Panel } from "@/components/Panel";
 import { Sunburst } from "@/components/Sunburst";
 import { CoinPill, MysteryBox, SectionTitle, StevenSticker } from "@/components/Art";
@@ -10,6 +10,7 @@ import { StevenStretching } from "@/components/home/StevenStretching";
 import { laserLayout } from "@/config/layout";
 import { AccessoryFan } from "@/components/home/AccessoryFan";
 import { minimumMacOS } from "@/config/catalog";
+import { placeAccessory } from "@/lib/accessorySpots";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
@@ -45,37 +46,36 @@ const steps = [
   },
 ];
 
+/**
+ * The page tells one story: what it is (hero) → who Steven is and who it's for → how it works → what's fun
+ * (laser, accessories, photobooth) → get it. Every section is spaced by the same --section-gap.
+ */
 export default function Home() {
+  const glasses = placeAccessory("pickedUp", "glasses");
 
   return (
     <>
-      {/* 1. Hero */}
+      {/* 1. Hero: Steven, the name, the pitch and Download all in the first screen */}
       <section className={styles.hero} aria-labelledby="hero-title">
         <Sunburst />
         <div className={styles.heroInner}>
           <StevenStretching className={styles.heroSteven} />
-          <h1 id="hero-title" className={styles.heroTitle}>
-            Stiffn&apos;t
-          </h1>
-          {/* DRAFT COPY (first half is the app's own onboarding line) */}
-          <p className={styles.heroPitch}>Short stretch breaks, with a cat who checks on you.</p>
-          <DownloadButton />
+          <div className={styles.heroWords}>
+            <h1 id="hero-title" className={styles.heroTitle}>
+              Stiffn&apos;t
+            </h1>
+            <p className={styles.heroPitch}>
+              <span className={styles.heroSlogan}>Stiffn&apos;t With Steven</span>
+              {/* DRAFT COPY (first half is the app's own onboarding line) */}
+              <span className={styles.heroLine}>Short stretch breaks for your Mac, with a cat who checks on&nbsp;you.</span>
+            </p>
+            <DownloadButton large />
+          </div>
         </div>
       </section>
 
       <div className={styles.page}>
-        {/* 2. About */}
-        <section className={styles.section} aria-labelledby="about-title">
-          <SectionTitle id="about-title">What is Stiffn&apos;t?</SectionTitle>
-          {/* DRAFT COPY */}
-          <p className={styles.lead}>
-            Stiffn&apos;t is a little app that lives in your Mac&apos;s menu bar. Steven, a black cat, reminds you to get
-            up and stretch, then watches through the camera to make sure you really did. It&apos;s for anyone who sits
-            at a desk all day and forgets to move until their neck says so.
-          </p>
-        </section>
-
-        {/* Steven's back story */}
+        {/* 2. Meet Steven (with what the app is, which used to be its own About section) */}
         <StevenStory />
 
         {/* 3. How it works */}
@@ -89,36 +89,75 @@ export default function Home() {
                     {index + 1}
                   </span>
                   {step.coin ? (
-                    <CoinPill>+ coins</CoinPill>
+                    <span className={styles.stepCoin}>
+                      <CoinPill>+ coins</CoinPill>
+                    </span>
                   ) : step.sticker ? (
-                    <StevenSticker src={step.picture} size={140} alt="" />
+                    <StevenSticker src={step.picture} size={120} alt="" />
                   ) : (
-                    <Image src={step.picture!} alt="" width={140} height={140} />
+                    <Image src={step.picture!} alt="" width={120} height={120} />
                   )}
                 </div>
-                <h3 className={styles.stepTitle}>
-                  <span className="sr-only">Step {index + 1}: </span>
-                  {step.title}
-                </h3>
-                <p className={styles.stepText}>{step.text}</p>
+                <div className={styles.stepWords}>
+                  <h3 className={styles.stepTitle}>
+                    <span className="sr-only">Step {index + 1}: </span>
+                    {step.title}
+                  </h3>
+                  <p className={styles.stepText}>{step.text}</p>
+                </div>
               </li>
             ))}
           </ol>
         </section>
 
-        {/* 4. Features */}
+        {/* 4–6. What's fun: Laser, Accessories, then trying them on in the Photobooth */}
         <div id="features" className={styles.features}>
           <LaserSection layout={laserLayout} />
 
-          <section className={styles.section} aria-labelledby="accessories-title">
+          <section className={`${styles.section} ${styles.centred}`} aria-labelledby="accessories-title">
             <SectionTitle id="accessories-title">Accessories</SectionTitle>
             {/* DRAFT COPY */}
-            <p className={styles.lead}>Steven has a little wardrobe: a crown, glasses and a bow, each one a surprise from a mystery box.</p>
+            <p className={styles.lead}>
+              Steven has a little wardrobe: a crown, glasses and a bow, each one a surprise from a mystery box.
+            </p>
             <AccessoryFan />
+          </section>
+
+          <section className={styles.section} aria-labelledby="photobooth-title">
+            <Panel radius={24} outline={2} shade={5} className={styles.boothCard}>
+              <div className={styles.boothArt}>
+                <span className={`${styles.boothSteven} steven-outline`}>
+                  <Image src="/images/steven/steven-picked-up.png" alt="" width={540} height={540} sizes="220px" />
+                  {/* eslint-disable-next-line @next/next/no-img-element -- placed in % at the app's glasses spot */}
+                  <img
+                    src="/images/accessories/small/glasses.png"
+                    alt=""
+                    width={270}
+                    height={270}
+                    className={styles.boothGlasses}
+                    style={{ left: glasses.left, top: glasses.top, width: glasses.width }}
+                  />
+                </span>
+              </div>
+              <div className={styles.boothWords}>
+                <h2 id="photobooth-title" className={styles.boothTitle}>
+                  {/* DRAFT COPY */}
+                  Try the accessories on yourself!
+                </h2>
+                {/* DRAFT COPY */}
+                <p className={styles.boothText}>
+                  Put Steven&apos;s crown, glasses or bow on your own photo, pick a frame with Steven in it, and snap a
+                  single photo or a strip of three.
+                </p>
+                <ButtonLink href="/photobooth" kind="primary">
+                  Open the Photobooth
+                </ButtonLink>
+              </div>
+            </Panel>
           </section>
         </div>
 
-        {/* 5. Get the app */}
+        {/* 7. Get the app */}
         <section className={styles.section} aria-labelledby="get-title">
           <Panel radius={24} outline={2} shade={5} className={styles.getPanel}>
             <div className={styles.getArt}>
@@ -137,7 +176,7 @@ export default function Home() {
                 {/* DRAFT COPY */}
                 <li>A camera (built-in or external) to check your stretches</li>
               </ul>
-              <DownloadButton wide />
+              <DownloadButton wide large />
             </div>
           </Panel>
         </section>

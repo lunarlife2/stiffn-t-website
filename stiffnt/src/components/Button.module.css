@@ -34,9 +34,16 @@
 }
 
 .small {
-  min-height: var(--button-height-small);
+  min-height: max(var(--button-height-small), 44px);
   padding: 0 var(--button-padding-x-small);
   font-size: var(--button-font-size-small);
+}
+
+/* website-only: the hero and "Get Stiffn't" Download, 4/3 of the normal button */
+.large {
+  min-height: calc(var(--button-height) * 4 / 3);
+  padding: 0 calc(var(--button-padding-x) * 4 / 3);
+  font-size: calc(var(--button-font-size) * 4 / 3);
 }
 
 .wide {

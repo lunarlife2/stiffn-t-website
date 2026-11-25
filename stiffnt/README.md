@@ -7,7 +7,7 @@ Xcode project.
 Author: Yimei Winata
 
 - `/`: Home (hero, about, how it works, Laser, accessories, get the app)
-- `/photobooth`: take a photo with Steven and his accessories (camera or uploaded photo; everything stays on the device)
+- `/photobooth`: a single photo or a 3-photo strip with Steven, his accessories and a Steven frame (camera only; everything stays on the device unless the visitor chooses "Get it on my phone")
 - any other URL: the 404 page
 
 ## Run it
@@ -76,11 +76,14 @@ at commit `51b2b38`. The website never links to the app folder.
 | Website | From the app |
 | --- | --- |
 | `src/fonts/DarumadropOne-Regular.ttf`, `DarumadropOne-OFL.txt` | `Resource/Fonts/` |
-| `src/app/icon.png` (512), `apple-icon.png` (180), `public/images/ui/app-icon.png` | `Assets.xcassets/AppIcon.appiconset/Stiffn't_App Icon.png` |
+| Site icon: `src/app/favicon.ico` (16, 32, 48), `src/app/icon.png` (512), `src/app/apple-icon.png` (180, no transparency); header logo `public/images/ui/app-icon.png` | `Resource/Assets.xcassets/AppIcon.appiconset/Stiffn't_App Icon.png` (the app icon), scaled down. Next.js links them from `src/app/` itself; there is no web manifest |
 | `public/images/steven/steven-front-facing.svg` / `.png` | `steven-front-facing.imageset`, `steven-front-facing-png.imageset` |
 | `public/images/steven/steven-picked-up.png`, `steven-loafing.png` | `steven-pick/steven-picked-up-png.imageset`, `steven-loaf/steven-loafing.imageset` |
 | `public/images/steven/steven-sitting.png` | the 8 `steven-sit/*` layers (810 × 810, same canvas), stacked in the app's order into one picture |
-| `public/images/accessories/*.png` | `crown`, `glasses`, `bow`, `bow-blue`, `wings`, `wings-pink` image sets |
+| `public/images/steven/steven-stretching.png` (+ `-body`, `-tail`) | the 6 `steven-buddy/steven-buddy-stretch-*` layers (1080 × 1080), stacked in the app's order (the hero animates the tail as its own layer). `public/images/steven/small/` holds 760px copies of `-body` and `-tail` for the hero |
+| `public/images/steven/steven-heart-eyes.png`, `steven-happy.png` (Photobooth stickers) | `steven-summary/summary-heart-eyes.imageset`, `summary-squint.imageset`, as they are |
+| `public/images/steven/steven-crouching.png` (Photobooth sticker) | `steven-vomit/vomit-1.imageset` (SVG), drawn at 2× (540 × 660) and centred on a 660 × 660 square like the other stickers |
+| `public/images/accessories/*.png` | `crown`, `glasses`, `bow`, `bow-blue`, `wings`, `wings-pink` image sets. `accessories/small/` holds 270px copies of crown, glasses and bow for the Home cards |
 | `public/images/interactions/laser.png` | `laser.imageset` |
 | `public/images/mystery-box/*.png` | `mistery-box/mystery-box-base.imageset`, `mystery-box-lid.imageset` |
 | `public/images/stretch/body-stretch.png` | `dashboard-stretch/body-stretch.imageset` |
@@ -98,6 +101,26 @@ ffmpeg -i assets/interaction-videos/laser_preview.mp4 -an -vf "scale=960:-2:flag
   -c:v libx264 -profile:v high -pix_fmt yuv420p -preset slow -crf 28 -movflags +faststart public/videos/laser.mp4
 ffmpeg -ss 1 -i public/videos/laser.mp4 -frames:v 1 -vf "scale=640:-2" -q:v 4 public/videos/posters/laser.jpg
 ```
+
+## Photobooth output
+
+One layout for both modes (`src/lib/photobooth.ts`, `PAPER`), used by the live preview and the PNG:
+
+- **1200 px wide**. Photo slots are **4:3, 1080 × 810**, 60 px margins at the sides and top, 40 px between slots,
+  6 px black outline, corner 24. Footer 260 px: "Stiffn't" (Darumadrop, 110 px) and the date (40 px).
+- **Single photo: 1200 × 1130 px.** **Strip: 1200 × 2830 px.**
+- Files: `stiffnt-photo-YYYY-MM-DD-HHmm.png` and `stiffnt-strip-YYYY-MM-DD-HHmm.png`.
+- **Frames** (Steven on the edges, never over the middle of a photo): Classic, Hanging (picked-up pose),
+  Stretch (stretching pose), Corner (sitting pose), Sleepy (loafing pose), and a ×20 version of each pose (Standing,
+  Sitting, Hanging, Sleepy, Stretch ×20: small copies of that pose, 110 px, spread all round the edges (20 on the preview and a single photo, about 38 on a strip) and
+  clear of the printed name and date). **Colours**: Cream, Green,
+  Yellow, and the sunburst in green (the app's), yellow, blue and orange. Any frame works with any colour, in both modes.
+- Stickers can be placed before "Take photo" and are locked from then until Retake or Cancel. They're the same on all
+  3 photos of a strip.
+- Setting up, the page fits the window: the live preview is one 4:3 photo (frame, colour and stickers on it, no printed
+  footer), sized by the height left on screen, with the Frames / Colour / Stickers panel beside it (under it on
+  phones). The site footer is hidden until the result screen.
+- No photo upload as a fallback: if the camera is blocked or missing, the page explains how to allow it.
 
 ## Photobooth QR setup
 
@@ -136,7 +159,7 @@ Redeploy after adding them. For local testing, `npm run dev` without a token sav
 ### Limits and privacy
 
 - PNG or JPEG only, checked from the file's own bytes; at most `maxUploadMB` (4 MB: Vercel functions accept at most
-  4.5 MB per request). Our strip and photo PNGs are about 0.5–2 MB.
+  4.5 MB per request). A PNG bigger than that is uploaded as a JPEG (quality 0.9) instead; the download stays PNG.
 - At most `uploadsPerHour` (10) per visitor (IP) per hour. This is counted in each server instance's memory, so it's
   best effort: a new instance starts at zero. Hashed IPs are kept for an hour and never logged.
 - Links use a random 24-character id (about 143 bits), so they can't be guessed; there's no list of photos anywhere.
@@ -154,7 +177,15 @@ current numbers and **Usage** in the dashboard.
 - **Dark mode:** the app's color sets have no dark values, so the site is light only.
 - **Focus style:** not in the app; the BrushStroke ring above was added with the owner's OK.
 - **Hero title size** (64–120px) and the hero layout: the app has no hero; the white Darumadrop with a hard black shade
-  follows StreakView's streak count.
+  follows StreakView's streak count. Steven is sized by the window's height too, so Steven, the name, the pitch and
+  Download fit in the first screen (stacked on phones and tablets, side by side from 900px).
+- **Home order:** hero (slogan "Stiffn't With Steven"), Meet Steven (with what the app is for; there is no separate
+  About section), How it works, Laser, Accessories, Photobooth card, Get Stiffn't.
+- **Section gap:** one website-only `--section-gap` in `globals.css` (64px, 48px on phones) between all Home sections.
+- **Large button:** `large` on `Button` / `DownloadButton` (4/3 of the app's button) for the two main Download buttons.
+  Small buttons, header and footer links are at least 44px tall to tap.
+- **"Active" badge:** 19px bold instead of 13 × scale medium, so white on greenPrimary500 passes the large-text
+  contrast rule.
 - **Header:** built from the app's sidebar (`MainView.swift`: greenPrimary200 → 300 gradient, 1.5 black outline,
   `.sidebar` tabs).
 - **Laser card:** shows a visible play/pause button (the app plays on hover only); its blurb from `PlayMode.swift`

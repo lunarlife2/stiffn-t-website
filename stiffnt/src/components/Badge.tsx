@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 /**
  * The Shop's "Active" capsule (UIFeature/Shop/ShopView.swift ActiveBadge): greenPrimary500 fill, white text,
  * system 13 medium, padding 10 × 3.
+ * Website: 19px bold (not 13 × scale, 500), so white on greenPrimary500 meets the large-text contrast rule.
  */
 export function Badge({ children, className }: { children: ReactNode; className?: string }) {
   return (
@@ -16,8 +17,8 @@ export function Badge({ children, className }: { children: ReactNode; className?
         whiteSpace: "nowrap",
         background: "var(--green-primary-500)",
         color: "var(--white)",
-        fontSize: "calc(13px * var(--type-scale))",
-        fontWeight: 500,
+        fontSize: "19px",
+        fontWeight: 700,
         padding: "3px 10px",
       }}
     >

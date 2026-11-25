@@ -10,12 +10,13 @@ import { Button, ButtonLink } from "@/components/Button";
 export function PhotoActions({
   src,
   downloadHref,
-  fileName = "stiffnt-photobooth.png",
+  fileName,
 }: {
   /** Where to fetch the picture for sharing (a URL or a blob: URL). */
   src: string;
   /** What Download opens (a URL that sends the file as an attachment, or the same blob: URL). */
   downloadHref: string;
+  /** The saved file's name. Left out (on /p/<id>), the server's name is used (stiffnt-photo|strip-…). */
   fileName?: string;
 }) {
   const [canShare, setCanShare] = useState(false);
@@ -24,7 +25,7 @@ export function PhotoActions({
 
   useEffect(() => {
     // Read once after the page loads in the browser; the server doesn't know the device.
-    const probe = new File([new Uint8Array(1)], fileName, { type: "image/png" });
+    const probe = new File([new Uint8Array(1)], fileName ?? "stiffnt-photo.png", { type: "image/png" });
     const share = typeof navigator.canShare === "function" && navigator.canShare({ files: [probe] });
     const iPhone = /iPhone|iPod/.test(navigator.userAgent);
     const frame = requestAnimationFrame(() => {
@@ -36,8 +37,10 @@ export function PhotoActions({
 
   const share = async () => {
     try {
-      const blob = await (await fetch(src)).blob();
-      const file = new File([blob], fileName, { type: blob.type || "image/png" });
+      const response = await fetch(src);
+      const blob = await response.blob();
+      const fromServer = /filename="([^"]+)"/.exec(response.headers.get("content-disposition") ?? "")?.[1];
+      const file = new File([blob], fileName ?? fromServer ?? "stiffnt-photo.png", { type: blob.type || "image/png" });
       await navigator.share({ files: [file], title: "My photo with Steven" });
     } catch (error) {
       if ((error as DOMException)?.name !== "AbortError") setMessage("Sharing didn't work here. Try Download instead.");
@@ -47,7 +50,7 @@ export function PhotoActions({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "flex-start" }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-        <ButtonLink href={downloadHref} download={fileName}>
+        <ButtonLink href={downloadHref} download={fileName ?? ""}>
           Download
         </ButtonLink>
         {canShare && (
