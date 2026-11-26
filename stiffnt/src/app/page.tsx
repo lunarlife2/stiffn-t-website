@@ -3,9 +3,12 @@ import Image from "next/image";
 import { ButtonLink, DownloadButton } from "@/components/Button";
 import { Panel } from "@/components/Panel";
 import { Sunburst } from "@/components/Sunburst";
+import { Logotype } from "@/components/Logotype";
+import { ScribbleBackground } from "@/components/ScribbleBackground";
 import { CoinPill, MysteryBox, SectionTitle, StevenSticker } from "@/components/Art";
 import { LaserSection } from "@/components/home/LaserSection";
 import { StevenStory } from "@/components/home/StevenStory";
+import { HeroDemo } from "@/components/home/HeroDemo";
 import { StevenStretching } from "@/components/home/StevenStretching";
 import { laserLayout } from "@/config/layout";
 import { AccessoryFan } from "@/components/home/AccessoryFan";
@@ -57,19 +60,23 @@ export default function Home() {
     <>
       {/* 1. Hero: Steven, the name, the pitch and Download all in the first screen */}
       <section className={styles.hero} aria-labelledby="hero-title">
-        <Sunburst />
+        <ScribbleBackground />
         <div className={styles.heroInner}>
-          <StevenStretching className={styles.heroSteven} />
+          <div className={styles.heroDemo}>
+            <HeroDemo>
+              <StevenStretching />
+            </HeroDemo>
+          </div>
           <div className={styles.heroWords}>
             <h1 id="hero-title" className={styles.heroTitle}>
-              Stiffn&apos;t
+              <Logotype />
             </h1>
             <p className={styles.heroPitch}>
-              <span className={styles.heroSlogan}>Stiffn&apos;t With Steven</span>
+              <span className={styles.heroSlogan}>With Steven</span>
               {/* DRAFT COPY (first half is the app's own onboarding line) */}
               <span className={styles.heroLine}>Short stretch breaks for your Mac, with a cat who checks on&nbsp;you.</span>
             </p>
-            <DownloadButton large />
+            <DownloadButton large light />
           </div>
         </div>
       </section>

@@ -11,6 +11,8 @@ export type Mode = "single" | "strip";
 
 export type Sticker = {
   key: number;
+  /** Which photo of the strip it is on (0 for a single photo). Each sticker sits on one photo only. */
+  slot: number;
   kind: string;
   src: string;
   label: string;
@@ -365,6 +367,11 @@ export async function renderSlot({
   ctx.fillStyle = "#000000";
   ctx.fillRect(0, 0, width, height);
   drawCover(ctx, source, sourceWidth, sourceHeight, 0, 0, width, height, true);
+  await drawStickers(ctx, stickers, width, height);
+  return canvas;
+}
+
+async function drawStickers(ctx: CanvasRenderingContext2D, stickers: Sticker[], width: number, height: number) {
   for (const sticker of stickers) {
     const image = await loadImage(sticker.src);
     const sw = sticker.w * width;
@@ -374,6 +381,17 @@ export async function renderSlot({
     if (sticker.outline) drawWithOutline(ctx, image, sx, sy, sw, sh, 4);
     else ctx.drawImage(image, sx, sy, sw, sh);
   }
+}
+
+/** A copy of a finished camera shot (from renderSlot) with the stickers drawn on it. */
+export async function addStickers(shot: HTMLCanvasElement, stickers: Sticker[]): Promise<HTMLCanvasElement> {
+  const canvas = document.createElement("canvas");
+  canvas.width = shot.width;
+  canvas.height = shot.height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas is not available");
+  ctx.drawImage(shot, 0, 0);
+  await drawStickers(ctx, stickers, canvas.width, canvas.height);
   return canvas;
 }
 

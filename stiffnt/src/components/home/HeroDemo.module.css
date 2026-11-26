@@ -1,0 +1,46 @@
+/* The laptop picture is 1682 × 1106.81; its screen opening is 1320 × 868 at (180, 121) inside it. */
+.stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1682 / 1106.81;
+}
+
+.screen {
+  position: absolute;
+  left: 10.7%;
+  top: 10.93%;
+  width: 78.48%;
+  height: 78.42%;
+  overflow: hidden;
+  background: #d9d9d9;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.laptop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Steven, across the bottom left corner of the laptop */
+.buddy {
+  position: absolute;
+  left: -19%;
+  bottom: 0%;
+  width: 40%;
+  pointer-events: none;
+}
+
+.buddy > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}

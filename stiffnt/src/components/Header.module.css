@@ -32,10 +32,9 @@
   border: 1.5px solid var(--black);
 }
 
+/* the logotype is drawn at a set width; its height follows the artwork */
 .name {
-  font-family: var(--family-display);
-  font-size: var(--type-large-title);
-  line-height: 1;
+  width: 112px;
 }
 
 .desktopNav {

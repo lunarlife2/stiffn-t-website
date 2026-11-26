@@ -3,6 +3,7 @@ import Link from "next/link";
 import { cacheLife } from "next/cache";
 import { site, type SocialKey } from "@/config/site";
 import { FocusRing } from "./BrushStroke";
+import { Logotype } from "./Logotype";
 import styles from "./Footer.module.css";
 
 /** The year for the copyright line, cached (Cache Components needs `new Date()` inside a cache). */
@@ -44,7 +45,7 @@ export async function Footer() {
           <Link href="/" className={styles.brand} aria-label="Stiffn't home">
             <FocusRing cornerRadius={12} />
             <Image src="/images/ui/app-icon.png" alt="" width={40} height={40} className={styles.icon} />
-            <span className={styles.name}>Stiffn&apos;t</span>
+            <Logotype className={styles.name} />
           </Link>
           {/* DRAFT COPY */}
           <p className={styles.tagline}>Stretch breaks with a cat who checks on you.</p>

@@ -8,26 +8,20 @@ import { site } from "@/config/site";
 import styles from "./Photobooth.module.css";
 
 type State =
-  | { step: "consent" }
   | { step: "uploading" }
   | { step: "ready"; link: string; qr: string }
   | { step: "error"; message: string };
 
 /**
- * "Get it on my phone": asks first, then uploads the finished picture (POST /api/photo), then shows a QR code
- * (made in the browser with `qrcode`, black on white) and the link with Copy. Nothing is uploaded before
- * "Upload and show QR" is pressed.
+ * "Scan with your phone": as soon as the finished picture is ready it is uploaded (POST /api/photo) and a QR code
+ * (made in the browser with `qrcode`, black on white) is shown with the link and Copy, so people can scan straight away.
+ * The panel says what happens to the photo (private link, deleted after a day).
  */
-export function PhoneHandoff({ blob, kind, onClose }: { blob: Blob; kind: "photo" | "strip"; onClose: () => void }) {
-  const [state, setState] = useState<State>({ step: "consent" });
+export function PhoneHandoff({ blob, kind }: { blob: Blob; kind: "photo" | "strip" }) {
+  const [state, setState] = useState<State>({ step: "uploading" });
   const [copied, setCopied] = useState(false);
-  const box = useRef<HTMLDivElement>(null);
+  const started = useRef<Blob | null>(null);
   const hours = site.photobooth.photoLifetimeHours;
-
-  // Each step's panel takes the focus, so keyboard and screen reader users land on it.
-  useEffect(() => {
-    box.current?.focus();
-  }, [state.step]);
 
   const upload = async () => {
     setState({ step: "uploading" });
@@ -39,7 +33,7 @@ export function PhoneHandoff({ blob, kind, onClose }: { blob: Blob; kind: "photo
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
-        setState({ step: "error", message: data.message ?? "We couldn't upload your photo. Please try again." });
+        setState({ step: "error", message: data.message ?? "We couldn't make a QR code for your photo. Please try again." });
         return;
       }
       const link: string = data.url ?? new URL(data.path, window.location.origin).toString();
@@ -51,9 +45,17 @@ export function PhoneHandoff({ blob, kind, onClose }: { blob: Blob; kind: "photo
       });
       setState({ step: "ready", link, qr });
     } catch {
-      setState({ step: "error", message: "We couldn't upload your photo. Check your connection and try again." });
+      setState({ step: "error", message: "We couldn't make a QR code. Check your connection and try again." });
     }
   };
+
+  // Starts by itself, once per finished picture.
+  useEffect(() => {
+    if (started.current === blob) return;
+    started.current = blob;
+    void upload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only when the picture changes
+  }, [blob]);
 
   const copy = async () => {
     if (state.step !== "ready") return;
@@ -67,26 +69,16 @@ export function PhoneHandoff({ blob, kind, onClose }: { blob: Blob; kind: "photo
 
   return (
     <Panel radius={24} outline={2} shade={5} className={styles.handoff}>
-      <div ref={box} tabIndex={-1} className={styles.handoffInner} aria-live="polite">
-        {state.step === "consent" && (
+      <div className={styles.handoffInner} aria-live="polite">
+        <h2 className={styles.handoffTitle}>Scan with your phone</h2>
+
+        {state.step === "uploading" && (
           <>
-            <h2 className={styles.handoffTitle}>Get it on your phone</h2>
-            <p className={styles.handoffText}>
-              This uploads your photo so your phone can open it. It&apos;s private (only people with the link can see
-              it) and it&apos;s deleted automatically after {hours} hours.
-            </p>
-            <div className={styles.actions}>
-              <Button kind="primary" onClick={upload}>
-                Upload and show QR
-              </Button>
-              <Button kind="secondary" onClick={onClose}>
-                Cancel
-              </Button>
+            <div className={`${styles.qr} ${styles.qrWaiting}`}>
+              <span>Making your QR code…</span>
             </div>
           </>
         )}
-
-        {state.step === "uploading" && <p className={styles.handoffText}>Uploading your photo…</p>}
 
         {state.step === "error" && (
           <>
@@ -94,11 +86,8 @@ export function PhoneHandoff({ blob, kind, onClose }: { blob: Blob; kind: "photo
               {state.message}
             </p>
             <div className={styles.actions}>
-              <Button kind="primary" onClick={upload}>
+              <Button kind="primary" small onClick={upload}>
                 Try again
-              </Button>
-              <Button kind="secondary" onClick={onClose}>
-                Close
               </Button>
             </div>
           </>
@@ -106,27 +95,22 @@ export function PhoneHandoff({ blob, kind, onClose }: { blob: Blob; kind: "photo
 
         {state.step === "ready" && (
           <>
-            <h2 className={styles.handoffTitle}>Scan with your phone</h2>
-            <div className={styles.qrRow}>
-              {/* eslint-disable-next-line @next/next/no-img-element -- generated data URL */}
-              <img src={state.qr} alt="QR code to open your photo on your phone" width={240} height={240} className={styles.qr} />
-              <div className={styles.qrWords}>
-                {/* DRAFT COPY */}
-                <p className={styles.handoffText}>Point your phone&apos;s camera at the code, then tap the link.</p>
-                <p className={styles.link}>{state.link}</p>
-                <div className={styles.actions}>
-                  <Button kind="secondary" small onClick={copy}>
-                    {copied ? "Copied!" : "Copy link"}
-                  </Button>
-                  <Button kind="tertiary" small onClick={onClose}>
-                    Close
-                  </Button>
-                </div>
-                <p className={styles.expires}>This link expires in {hours} hours</p>
-              </div>
+            {/* eslint-disable-next-line @next/next/no-img-element -- generated data URL */}
+            <img src={state.qr} alt="QR code to open your photo on your phone" width={240} height={240} className={styles.qr} />
+            {/* DRAFT COPY */}
+            <p className={styles.handoffText}>Point your phone&apos;s camera at the code, then tap the link.</p>
+            <div className={styles.actions}>
+              <Button kind="secondary" small onClick={copy}>
+                {copied ? "Copied!" : "Copy link"}
+              </Button>
             </div>
           </>
         )}
+
+        {/* DRAFT COPY */}
+        <p className={styles.expires}>
+          Your photo is uploaded for this. Only people with the link can see it, and it&apos;s deleted after {hours} hours.
+        </p>
       </div>
     </Panel>
   );

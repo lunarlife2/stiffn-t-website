@@ -1,0 +1,42 @@
+.background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* the lines keep one thin width however the picture is scaled */
+.frame path {
+  fill: none;
+  stroke: #3c9619;
+  stroke-width: 1.4px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* one drawing is visible for a fifth of every second; the delays above line the five up one after another */
+.frame {
+  opacity: 0;
+  animation: boil 1s step-end infinite;
+}
+
+@keyframes boil {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame {
+    animation: none;
+  }
+  .frame:first-of-type {
+    opacity: 1;
+  }
+}
